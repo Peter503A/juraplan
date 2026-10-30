@@ -900,6 +900,50 @@ svg { display: block; }
 .install-btn.show { display: flex; }
 .install-btn:hover { background: #e4dffa; }
 
+/* Installations-Banner (für neue Besucher über den geteilten Link) */
+.install-banner {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: calc(100% - 32px);
+  max-width: 500px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  padding: 14px 16px;
+  animation: bannerIn 0.25s ease;
+}
+@keyframes bannerIn {
+  from { transform: translate(-50%, 16px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+.install-banner .ib-icon {
+  width: 42px; height: 42px; border-radius: 11px;
+  background: var(--accent-soft); color: var(--accent);
+  display: grid; place-items: center; flex-shrink: 0;
+}
+.install-banner .ib-text { display: flex; flex-direction: column; line-height: 1.35; flex: 1; min-width: 0; }
+.install-banner .ib-text strong { font-size: 14px; font-weight: 700; }
+.install-banner .ib-text span { font-size: 12px; color: var(--text-muted); }
+.install-banner .ib-install { padding: 9px 16px; font-size: 13.5px; flex-shrink: 0; }
+.install-banner .ib-close {
+  width: 30px; height: 30px; border-radius: 8px;
+  display: grid; place-items: center; color: var(--text-muted);
+  flex-shrink: 0; transition: background 0.12s;
+}
+.install-banner .ib-close:hover { background: var(--bg); color: var(--text); }
+
+@media (max-width: 560px) {
+  .install-banner { flex-wrap: wrap; }
+  .install-banner .ib-install { flex: 1; }
+}
+
 /* ============================================================
    Responsive / Mobile
    ============================================================ */

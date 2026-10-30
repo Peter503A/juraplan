@@ -96,9 +96,14 @@
       el("div", { class: "save-state saved", role: "status" },
         [Icons.checkCircle(16), "Lokal gespeichert"])
     );
-    const installBtn = el("button", { class: "install-btn", id: "install-btn",
-      onclick: () => App.promptInstall() }, [Icons.download(15), "Als App installieren"]);
-    bottom.appendChild(installBtn);
+    // Installations-Button nur zeigen, wenn die App NICHT bereits installiert läuft
+    const standalone = window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
+    if (!standalone) {
+      const installBtn = el("button", { class: "install-btn show", id: "install-btn",
+        onclick: () => App.promptInstall() }, [Icons.download(15), "Als App installieren"]);
+      bottom.appendChild(installBtn);
+    }
     bottom.appendChild(
       el("button", { class: "text-button", onclick: () => App.exportFile() },
         [Icons.download(15), " Daten exportieren"])
