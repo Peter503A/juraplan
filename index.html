@@ -31,9 +31,33 @@
   <script src="js/entryDialog.js"></script>
   <script src="js/app.js"></script>
   <script>
+    // Service Worker registrieren und automatische Updates sicherstellen.
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
+        navigator.serviceWorker.register('sw.js').then((reg) => {
+          // Regelmäßig auf eine neue Version prüfen
+          reg.update();
+          setInterval(() => reg.update(), 60 * 60 * 1000);
+
+          // Wird ein Update gefunden, sofort aktivieren lassen
+          reg.addEventListener('updatefound', () => {
+            const sw = reg.installing;
+            if (!sw) return;
+            sw.addEventListener('statechange', () => {
+              if (sw.state === 'installed' && navigator.serviceWorker.controller) {
+                sw.postMessage('SKIP_WAITING');
+              }
+            });
+          });
+        }).catch(() => {});
+
+        // Wenn der neue Service Worker übernimmt, Seite einmal neu laden
+        let reloaded = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (reloaded) return;
+          reloaded = true;
+          window.location.reload();
+        });
       });
     }
   </script>
