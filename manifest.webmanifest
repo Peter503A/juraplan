@@ -1,0 +1,39 @@
+{
+  "name": "JuraPlan – Dein Lernkalender",
+  "short_name": "JuraPlan",
+  "description": "Dein persönlicher Kalender für Lernblöcke, Termine, Notizen und Fortschritt. Alle Daten bleiben lokal auf dem Gerät.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f5f9",
+  "theme_color": "#7465cf",
+  "lang": "de",
+  "categories": ["productivity", "education"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

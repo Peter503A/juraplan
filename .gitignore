@@ -1,0 +1,5 @@
+# Entwicklungs-/Hilfsdateien
+tools/
+.DS_Store
+Thumbs.db
+*.log
