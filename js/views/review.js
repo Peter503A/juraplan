@@ -252,8 +252,7 @@
         ])
       );
       dayEvs.forEach((e) => {
-        const mod = Store.moduleById(e.moduleId);
-        const color = mod ? mod.color : "#7465cf";
+        const color = Store.entryColor(e);
         const row = el("div", {
           class: "wet-row" + (e.status === "done" ? " done" : ""),
           onclick: () => EntryDialog.open(e),

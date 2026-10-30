@@ -201,23 +201,27 @@
     const endMin = U.timeToMin(e.end);
     const top = ((startMin - DAY_START * 60) / 60) * HOUR_H;
     const height = Math.max(22, ((endMin - startMin) / 60) * HOUR_H - 2);
-    const mod = Store.moduleById(e.moduleId);
-    const color = mod ? mod.color : "#7465cf";
+    const color = Store.entryColor(e);
+    const isAppt = e.type === "appointment";
 
     const block = el("div", {
-      class: "event" + (e.status === "done" ? " done" : ""),
+      class: "event" + (e.status === "done" ? " done" : "") +
+        (isAppt ? " is-appointment" : " is-block"),
       style: {
         top: top + "px",
         height: height + "px",
         left: `calc(${leftPct}% + 3px)`,
         width: `calc(${widthPct}% - 6px)`,
         borderLeftColor: color,
-        background: hexToSoft(color),
+        background: isAppt ? "transparent" : hexToSoft(color),
+        boxShadow: isAppt ? `inset 0 0 0 1px ${hexToSoft(color, 0.9)}` : null,
       },
       onclick: (ev) => { ev.stopPropagation(); EntryDialog.open(e); },
     });
 
     const title = el("div", { class: "ev-title" });
+    // Typ-Icon: Termin = Kalender, Lernblock = Buch
+    title.appendChild((isAppt ? Icons.calendar(11, "ev-type-icon") : Icons.book(11, "ev-type-icon")));
     if (e.priority === "urgent") title.appendChild(Icons.alert(12, "prio-flag"));
     else if (e.priority === "important") title.appendChild(Icons.star(12, "prio-flag"));
     title.appendChild(el("span", {}, [e.title]));
@@ -271,13 +275,18 @@
         const evs = Store.entriesForDate(iso)
           .sort((a, b) => U.timeToMin(a.start) - U.timeToMin(b.start));
         evs.slice(0, 3).forEach((e) => {
-          const mod = Store.moduleById(e.moduleId);
-          const color = mod ? mod.color : "#7465cf";
+          const color = Store.entryColor(e);
+          const isAppt = e.type === "appointment";
           const ev = el("div", {
-            class: "mc-event" + (e.status === "done" ? " done" : ""),
-            style: { borderLeftColor: color, background: hexToSoft(color) },
+            class: "mc-event" + (e.status === "done" ? " done" : "") +
+              (isAppt ? " is-appointment" : " is-block"),
+            style: {
+              borderLeftColor: color,
+              background: isAppt ? "transparent" : hexToSoft(color),
+            },
             onclick: (evt) => { evt.stopPropagation(); EntryDialog.open(e); },
           }, [
+            (isAppt ? Icons.calendar(9, "ev-type-icon") : Icons.book(9, "ev-type-icon")),
             e.priority === "urgent" ? Icons.alert(10) :
               e.priority === "important" ? Icons.star(10) : null,
             el("span", {}, [e.title]),
@@ -455,12 +464,12 @@
   }
 
   // Helfer: Hex -> sehr helle Variante (Hintergrund)
-  function hexToSoft(hex) {
+  function hexToSoft(hex, alpha) {
     const h = hex.replace("#", "");
     const r = parseInt(h.substring(0, 2), 16);
     const g = parseInt(h.substring(2, 4), 16);
     const b = parseInt(h.substring(4, 6), 16);
-    return `rgba(${r}, ${g}, ${b}, 0.14)`;
+    return `rgba(${r}, ${g}, ${b}, ${alpha != null ? alpha : 0.14})`;
   }
 
   window.CalendarView = { render, hexToSoft };

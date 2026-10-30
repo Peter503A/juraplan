@@ -19,6 +19,7 @@
           start: (defaults && defaults.start) || "09:00",
           end: (defaults && defaults.end) || "10:00",
           note: "",
+          color: null, // individuelle Farbe; null = Modulfarbe erben
           priority: "normal", // normal | important | urgent
           status: "open", // open | done | partial | missing
           actualHours: 0,
@@ -53,17 +54,41 @@
 
     const body = el("div", { class: "modal-body" });
 
-    // Typ
-    body.appendChild(
-      field("Typ", segmented(
-        [
-          { v: "block", label: "Lernblock", icon: Icons.book },
-          { v: "appointment", label: "Termin", icon: Icons.calendar },
-        ],
-        e.type,
-        (v) => { e.type = v; }
-      ))
-    );
+    // Typ – große, visuell unterscheidbare Auswahlkarten
+    const typeCards = el("div", { class: "type-cards" });
+    const typeOptions = [
+      {
+        v: "block", icon: Icons.book, label: "Lernblock",
+        desc: "Zählt zur Lernzeit",
+      },
+      {
+        v: "appointment", icon: Icons.calendar, label: "Termin",
+        desc: "Z. B. Vorlesung, Prüfung",
+      },
+    ];
+    typeOptions.forEach((o) => {
+      const card = el("button", {
+        class: "type-card type-" + o.v + (e.type === o.v ? " active" : ""),
+        "data-type": o.v,
+        onclick: () => {
+          e.type = o.v;
+          typeCards.querySelectorAll(".type-card").forEach((c) => c.classList.remove("active"));
+          card.classList.add("active");
+          // Platzhalter des Titelfelds anpassen
+          titleInput.setAttribute("placeholder",
+            o.v === "appointment" ? "z. B. Vorlesung Zivilrecht" : "z. B. Schuldrecht AT – Fall 3");
+        },
+      }, [
+        el("span", { class: "tc-icon" }, [o.icon(20)]),
+        el("span", { class: "tc-text" }, [
+          el("span", { class: "tc-label" }, [o.label]),
+          el("span", { class: "tc-desc" }, [o.desc]),
+        ]),
+        el("span", { class: "tc-check" }, [Icons.check(14)]),
+      ]);
+      typeCards.appendChild(card);
+    });
+    body.appendChild(field("Typ", typeCards));
 
     // Titel
     const titleInput = el("input", { type: "text", value: e.title,
@@ -85,6 +110,36 @@
         onchange: (ev) => (e.date = ev.target.value) })),
     ]);
     body.appendChild(modRow);
+
+    // Farbe des Eintrags (individuell, überschreibt die Modulfarbe)
+    const colorPick = el("div", { class: "color-pick entry-color-pick" });
+
+    // "Auto" = keine eigene Farbe -> erbt Modulfarbe
+    const autoBtn = el("button", {
+      class: "color-auto" + (!e.color ? " active" : ""),
+      "aria-label": "Automatisch (Modulfarbe)",
+      title: "Automatisch – nutzt die Modulfarbe",
+      onclick: () => {
+        e.color = null;
+        setActiveColor(colorPick, null);
+      },
+    }, [Icons.layers(15)]);
+    colorPick.appendChild(autoBtn);
+
+    Store.DEFAULT_COLORS.forEach((c) => {
+      const b = el("button", {
+        class: e.color === c ? "active" : "",
+        style: { background: c },
+        "aria-label": "Farbe " + c,
+        onclick: () => {
+          e.color = c;
+          setActiveColor(colorPick, c);
+        },
+      });
+      colorPick.appendChild(b);
+    });
+    body.appendChild(field("Farbe", colorPick,
+      "Standard: Modulfarbe. Wähle eine eigene Farbe, um den Eintrag abzuheben."));
 
     // Zeit
     body.appendChild(
@@ -244,6 +299,24 @@
     f.appendChild(lab);
     f.appendChild(control);
     return f;
+  }
+
+  function setActiveColor(container, color) {
+    container.querySelectorAll("button").forEach((b) => b.classList.remove("active"));
+    if (color === null) {
+      const auto = container.querySelector(".color-auto");
+      if (auto) auto.classList.add("active");
+    } else {
+      container.querySelectorAll("button").forEach((b) => {
+        if (b.style.background && rgbEquals(b.style.background, color)) b.classList.add("active");
+      });
+    }
+  }
+  // Vergleich hilfsweise über gesetzten Style (Browser normalisiert hex -> rgb)
+  function rgbEquals(styleBg, hex) {
+    const probe = document.createElement("span");
+    probe.style.background = hex;
+    return probe.style.background === styleBg || styleBg.toLowerCase() === hex.toLowerCase();
   }
 
   function segmented(options, current, onPick, extraClass) {

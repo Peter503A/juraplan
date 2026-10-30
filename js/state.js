@@ -116,6 +116,14 @@
     return list;
   }
 
+  // Farbe eines Eintrags: individuelle Farbe > Modulfarbe > Standard
+  function entryColor(e) {
+    if (e.color) return e.color;
+    const mod = moduleById(e.moduleId);
+    if (mod) return mod.color;
+    return "#7465cf";
+  }
+
   // Dauer (geplant) in Minuten
   function plannedMin(e) {
     const s = U.timeToMin(e.start);
@@ -179,7 +187,7 @@
     state, subscribe,
     init, saveEntry, deleteEntry, saveModule, deleteModule, moduleById,
     saveNote, getNote,
-    entriesForDate, entriesInRange, filtered, plannedMin, actualMin,
+    entriesForDate, entriesInRange, filtered, entryColor, plannedMin, actualMin,
     setView, setCalView, setCursor, setReviewCursor, setActiveModule, setPrioFilter,
     exportData, importData,
     DEFAULT_COLORS,
