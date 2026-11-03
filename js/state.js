@@ -19,7 +19,7 @@
     reviewCursor: new Date(),
     activeModule: null, // Modul-ID für Filter, null = alle
     prioFilter: "all", // all | important | urgent
-    entries: [], // {id, title, type, moduleId, date, start, end, note, color, priority, actualMin, missingNote, carryOver, createdAt}
+    entries: [], // {id, title, moduleId, date, start, end, note, color, priority, missingNote, carryOver, createdAt}
     modules: [], // {id, name, color, goalMin, createdAt}
     notes: {}, // id -> {id, text}
   };
@@ -124,10 +124,11 @@
     return "#7465cf";
   }
 
-  // Tatsächlich gelernte Minuten (nur Lernblöcke zählen zur Lernzeit)
+  // Gelernte Minuten = Dauer aus Von–Bis (jeder Eintrag ist Lernzeit)
   function actualMin(e) {
-    if (e.type !== "block") return 0;
-    return e.actualMin || 0;
+    const s = U.timeToMin(e.start);
+    const en = U.timeToMin(e.end);
+    return Math.max(0, en - s);
   }
 
   // ---------- Navigation ----------

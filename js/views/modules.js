@@ -44,9 +44,7 @@
 
   function moduleCard(m) {
     const entries = Store.state.entries.filter((e) => e.moduleId === m.id);
-    const blocks = entries.filter((e) => e.type === "block");
-    const loggedCount = blocks.filter((e) => Store.actualMin(e) > 0).length;
-    const actualMin = blocks.reduce((sum, e) => sum + Store.actualMin(e), 0);
+    const actualMin = entries.reduce((sum, e) => sum + Store.actualMin(e), 0);
     const goalMin = m.goalMin || 0;
     const goalPct = goalMin ? Math.min(100, (actualMin / goalMin) * 100) : 0;
 
@@ -72,7 +70,6 @@
     card.appendChild(
       el("div", { class: "mc-stats" }, [
         stat(String(entries.length), "Einträge"),
-        stat(`${loggedCount}`, "mit Lernzeit"),
         stat(U.fmtHours(actualMin), "gelernt"),
       ])
     );

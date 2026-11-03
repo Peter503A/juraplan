@@ -13,7 +13,6 @@
       : {
           id: null,
           title: "",
-          type: "block", // block | appointment
           moduleId: Store.state.activeModule || null,
           date: (defaults && defaults.date) || U.toISODate(new Date()),
           start: (defaults && defaults.start) || "09:00",
@@ -21,19 +20,9 @@
           note: "",
           color: null, // individuelle Farbe; null = Modulfarbe erben
           priority: "normal", // normal | important | urgent
-          actualHours: 0,
-          actualMinutes: 0,
           missingNote: "",
           carryOver: false,
         };
-
-    // Backwards: actualMin -> hours/minutes
-    if (e.actualMin != null && e.actualHours == null) {
-      e.actualHours = Math.floor(e.actualMin / 60);
-      e.actualMinutes = e.actualMin % 60;
-    }
-    e.actualHours = e.actualHours || 0;
-    e.actualMinutes = e.actualMinutes || 0;
 
     const root = document.getElementById("modal-root");
     U.clear(root);
@@ -53,47 +42,9 @@
 
     const body = el("div", { class: "modal-body" });
 
-    // Typ – große, visuell unterscheidbare Auswahlkarten
-    const typeCards = el("div", { class: "type-cards" });
-    const typeOptions = [
-      {
-        v: "block", icon: Icons.book, label: "Lernblock",
-        desc: "Zählt zur Lernzeit",
-      },
-      {
-        v: "appointment", icon: Icons.calendar, label: "Termin",
-        desc: "Z. B. Vorlesung, Prüfung",
-      },
-    ];
-    typeOptions.forEach((o) => {
-      const card = el("button", {
-        class: "type-card type-" + o.v + (e.type === o.v ? " active" : ""),
-        "data-type": o.v,
-        onclick: () => {
-          e.type = o.v;
-          typeCards.querySelectorAll(".type-card").forEach((c) => c.classList.remove("active"));
-          card.classList.add("active");
-          // Platzhalter des Titelfelds anpassen
-          titleInput.setAttribute("placeholder",
-            o.v === "appointment" ? "z. B. Vorlesung Zivilrecht" : "z. B. Schuldrecht AT – Fall 3");
-          // Lernzeit-Feld nur für Lernblöcke zeigen
-          renderLearned();
-        },
-      }, [
-        el("span", { class: "tc-icon" }, [o.icon(20)]),
-        el("span", { class: "tc-text" }, [
-          el("span", { class: "tc-label" }, [o.label]),
-          el("span", { class: "tc-desc" }, [o.desc]),
-        ]),
-        el("span", { class: "tc-check" }, [Icons.check(14)]),
-      ]);
-      typeCards.appendChild(card);
-    });
-    body.appendChild(field("Typ", typeCards));
-
     // Titel
     const titleInput = el("input", { type: "text", value: e.title,
-      placeholder: e.type === "appointment" ? "z. B. Vorlesung Zivilrecht" : "z. B. Schuldrecht AT – Fall 3",
+      placeholder: "z. B. Schuldrecht AT – Fall 3",
       oninput: (ev) => (e.title = ev.target.value) });
     body.appendChild(field("Titel", titleInput));
 
@@ -142,15 +93,25 @@
     body.appendChild(field("Farbe", colorPick,
       "Standard: Modulfarbe. Wähle eine eigene Farbe, um den Eintrag abzuheben."));
 
-    // Zeit
+    // Zeit (Von–Bis) + live berechnete gelernte Dauer
+    const durationHint = el("span", { class: "hint", style: { marginLeft: "8px" } }, [""]);
+    function updateDuration() {
+      const mins = U.timeToMin(e.end) - U.timeToMin(e.start);
+      durationHint.textContent = mins > 0 ? "= " + U.fmtDuration(mins) + " gelernt" : "";
+    }
+    const vonLabel = el("div", { class: "field" }, [
+      el("label", {}, ["Von", durationHint]),
+      el("input", { type: "time", value: e.start, step: "300",
+        onchange: (ev) => { e.start = ev.target.value; updateDuration(); } }),
+    ]);
     body.appendChild(
       el("div", { class: "field-row" }, [
-        field("Von", el("input", { type: "time", value: e.start, step: "300",
-          onchange: (ev) => { e.start = ev.target.value; } })),
+        vonLabel,
         field("Bis", el("input", { type: "time", value: e.end, step: "300",
-          onchange: (ev) => { e.end = ev.target.value; } })),
+          onchange: (ev) => { e.end = ev.target.value; updateDuration(); } })),
       ])
     );
+    updateDuration();
 
     // Priorität
     body.appendChild(
@@ -173,30 +134,6 @@
         oninput: (ev) => (e.note = ev.target.value),
       }, [e.note || ""]), "Pro Eintrag kannst du hier frei notieren.")
     );
-
-    // Gelernte Zeit – nur bei Lernblöcken sinnvoll (Termine zählen nicht zur Lernzeit)
-    const learnedWrap = el("div", { style: { display: "flex", flexDirection: "column", gap: "16px" } });
-    body.appendChild(learnedWrap);
-
-    function renderLearned() {
-      U.clear(learnedWrap);
-      if (e.type !== "block") return; // Termine haben keine Lernzeit
-      const hrs = el("input", { type: "number", min: "0", max: "24", value: e.actualHours,
-        oninput: (ev) => (e.actualHours = parseInt(ev.target.value, 10) || 0) });
-      const mins = el("input", { type: "number", min: "0", max: "59", step: "5", value: e.actualMinutes,
-        oninput: (ev) => (e.actualMinutes = parseInt(ev.target.value, 10) || 0) });
-      learnedWrap.appendChild(
-        field("Gelernt",
-          el("div", { class: "field-row" }, [
-            el("div", { style: { display: "flex", alignItems: "center", gap: "6px" } },
-              [hrs, el("span", { class: "muted tiny" }, ["Std."])]),
-            el("div", { style: { display: "flex", alignItems: "center", gap: "6px" } },
-              [mins, el("span", { class: "muted tiny" }, ["Min."])]),
-          ]),
-          "Deine tatsächlich gelernte Zeit – erscheint im Wochenrückblick.")
-      );
-    }
-    renderLearned();
 
     // Offene Punkte (optional): Was fehlt noch + in nächste Woche mitnehmen
     body.appendChild(
@@ -260,11 +197,12 @@
       return;
     }
     e.title = e.title.trim();
-    // Termine zählen nicht zur Lernzeit
-    if (e.type !== "block") { e.actualHours = 0; e.actualMinutes = 0; }
-    e.actualMin = (e.actualHours || 0) * 60 + (e.actualMinutes || 0);
-    // Status gibt es nicht mehr – alte Daten migrieren
+    // Alte Felder migrieren (gibt es nicht mehr): gelernte Zeit = Dauer Von–Bis, kein Typ/Status
     delete e.status;
+    delete e.type;
+    delete e.actualMin;
+    delete e.actualHours;
+    delete e.actualMinutes;
     await Store.saveEntry(e);
     U.toast(isNew ? "Eintrag angelegt" : "Gespeichert");
     close();

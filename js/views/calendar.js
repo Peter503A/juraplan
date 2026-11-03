@@ -167,7 +167,7 @@
     container.appendChild(
       el("div", { class: "empty-hint" }, [
         Icons.plus(16),
-        "Klicke auf eine Uhrzeit, um deinen ersten Lernblock oder Termin einzutragen.",
+        "Klicke auf eine Uhrzeit, um deine gelernte Zeit einzutragen.",
       ])
     );
 
@@ -202,27 +202,21 @@
     const top = ((startMin - DAY_START * 60) / 60) * HOUR_H;
     const height = Math.max(22, ((endMin - startMin) / 60) * HOUR_H - 2);
     const color = Store.entryColor(e);
-    const isAppt = e.type === "appointment";
-
     const learned = Store.actualMin(e);
     const block = el("div", {
-      class: "event" + (learned > 0 ? " logged" : "") +
-        (isAppt ? " is-appointment" : " is-block"),
+      class: "event is-block",
       style: {
         top: top + "px",
         height: height + "px",
         left: `calc(${leftPct}% + 3px)`,
         width: `calc(${widthPct}% - 6px)`,
         borderLeftColor: color,
-        background: isAppt ? "transparent" : hexToSoft(color),
-        boxShadow: isAppt ? `inset 0 0 0 1px ${hexToSoft(color, 0.9)}` : null,
+        background: hexToSoft(color),
       },
       onclick: (ev) => { ev.stopPropagation(); EntryDialog.open(e); },
     });
 
     const title = el("div", { class: "ev-title" });
-    // Typ-Icon: Termin = Kalender, Lernblock = Buch
-    title.appendChild((isAppt ? Icons.calendar(11, "ev-type-icon") : Icons.book(11, "ev-type-icon")));
     if (e.priority === "urgent") title.appendChild(Icons.alert(12, "prio-flag"));
     else if (e.priority === "important") title.appendChild(Icons.star(12, "prio-flag"));
     title.appendChild(el("span", {}, [e.title]));
@@ -232,8 +226,8 @@
       block.appendChild(el("div", { class: "ev-time" },
         [`${e.start}–${e.end}`]));
     }
-    // Für Lernblöcke mit eingetragener Zeit: gelernte Zeit als Badge
-    if (height > 52 && !isAppt && learned > 0) {
+    // Gelernte Zeit als Badge
+    if (height > 52 && learned > 0) {
       block.appendChild(el("div", { class: "ev-badges" },
         [el("span", { class: "mini-badge ok" }, [U.fmtDuration(learned) + " gelernt"])]));
     }
@@ -272,16 +266,14 @@
           .sort((a, b) => U.timeToMin(a.start) - U.timeToMin(b.start));
         evs.slice(0, 3).forEach((e) => {
           const color = Store.entryColor(e);
-          const isAppt = e.type === "appointment";
           const ev = el("div", {
-            class: "mc-event" + (isAppt ? " is-appointment" : " is-block"),
+            class: "mc-event is-block",
             style: {
               borderLeftColor: color,
-              background: isAppt ? "transparent" : hexToSoft(color),
+              background: hexToSoft(color),
             },
             onclick: (evt) => { evt.stopPropagation(); EntryDialog.open(e); },
           }, [
-            (isAppt ? Icons.calendar(9, "ev-type-icon") : Icons.book(9, "ev-type-icon")),
             e.priority === "urgent" ? Icons.alert(10) :
               e.priority === "important" ? Icons.star(10) : null,
             el("span", {}, [e.title]),
@@ -338,9 +330,7 @@
 
     const st = U.startOfWeek(s.cursor), en = U.endOfWeek(s.cursor);
     const weekEntries = Store.entriesInRange(U.toISODate(st), U.toISODate(en));
-    const blocks = weekEntries.filter((e) => e.type === "block");
-    const actualMin = blocks.reduce((sum, e) => sum + Store.actualMin(e), 0);
-    const loggedCount = blocks.filter((e) => Store.actualMin(e) > 0).length;
+    const actualMin = weekEntries.reduce((sum, e) => sum + Store.actualMin(e), 0);
 
     // Deine Woche
     const card1 = el("div", { class: "rail-card" });
@@ -351,8 +341,7 @@
 
     card1.appendChild(
       el("div", { class: "rail-stats" }, [
-        statRow("Lernblöcke mit Zeit", `${loggedCount}`),
-        statRow("Einträge gesamt", `${weekEntries.length}`),
+        statRow("Lerneinträge", `${weekEntries.length}`),
       ])
     );
     card1.appendChild(

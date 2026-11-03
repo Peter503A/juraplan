@@ -26,27 +26,25 @@
       ])
     );
 
-    // Daten berechnen
+    // Daten berechnen – jeder Eintrag ist Lernzeit (Dauer aus Von–Bis)
     const entries = Store.entriesInRange(U.toISODate(st), U.toISODate(en));
-    const blocks = entries.filter((e) => e.type === "block");
-    const actualMin = blocks.reduce((sum, e) => sum + Store.actualMin(e), 0);
-    const loggedCount = blocks.filter((e) => Store.actualMin(e) > 0).length;
-    // Ø pro erfasstem Lernblock
-    const avgMin = loggedCount ? Math.round(actualMin / loggedCount) : 0;
+    const actualMin = entries.reduce((sum, e) => sum + Store.actualMin(e), 0);
+    const count = entries.length;
+    const avgMin = count ? Math.round(actualMin / count) : 0;
 
     // Kennzahlen – nur die tatsächlich gelernte Zeit, kein Soll/Ist-Vergleich mehr
     scroll.appendChild(
       el("div", { class: "stat-row" }, [
         statCard("Gelernt diese Woche", U.fmtHours(actualMin)),
-        statCard("Lernblöcke mit Zeit", `${loggedCount}`),
-        statCard("Ø pro Lernblock", U.fmtDuration(avgMin)),
+        statCard("Lerneinträge", `${count}`),
+        statCard("Ø pro Eintrag", U.fmtDuration(avgMin)),
       ])
     );
 
     // Lernzeit nach Modul + Offen & mitnehmen
     scroll.appendChild(
       el("div", { class: "review-grid" }, [
-        moduleTimePanel(blocks),
+        moduleTimePanel(entries),
         openPanel(entries, st, en),
       ])
     );

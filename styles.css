@@ -434,14 +434,6 @@ svg { display: block; }
 .event .ev-badges { display: flex; gap: 3px; margin-top: 3px; flex-wrap: wrap; }
 .event.logged { box-shadow: var(--shadow-sm); }
 .event .prio-flag { flex-shrink: 0; }
-.event .ev-type-icon { flex-shrink: 0; opacity: 0.7; }
-
-/* Termine: offener Look mit gestricheltem Rand, Lernblöcke: gefüllt */
-.event.is-appointment {
-  border-left-style: dashed;
-  border-left-width: 3px;
-}
-.event.is-appointment .ev-title { font-style: italic; }
 .event.is-block { border-left-style: solid; }
 
 .mini-badge {
@@ -517,9 +509,6 @@ svg { display: block; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   display: flex; align-items: center; gap: 4px;
 }
-.mc-event.done { opacity: 0.6; text-decoration: line-through; }
-.mc-event .ev-type-icon { flex-shrink: 0; opacity: 0.7; }
-.mc-event.is-appointment { border-left-style: dashed; font-style: italic; }
 .mc-event.is-block { border-left-style: solid; }
 .mc-more { font-size: 10.5px; color: var(--text-muted); padding-left: 4px; }
 
@@ -802,51 +791,6 @@ svg { display: block; }
   box-shadow: none;
 }
 .color-pick .color-auto::after { content: "Auto"; font-size: 12px; font-weight: 600; }
-
-/* Typ-Auswahlkarten (Lernblock vs. Termin) */
-.type-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.type-card {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 13px 14px;
-  border: 1.5px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  text-align: left;
-  transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
-  position: relative;
-}
-.type-card:hover { border-color: var(--accent); }
-.type-card .tc-icon {
-  width: 38px; height: 38px; border-radius: 10px;
-  display: grid; place-items: center;
-  flex-shrink: 0;
-  background: var(--bg);
-  color: var(--text-muted);
-  transition: background 0.12s, color 0.12s;
-}
-.type-card .tc-text { display: flex; flex-direction: column; line-height: 1.25; }
-.type-card .tc-label { font-size: 14px; font-weight: 700; color: var(--text); }
-.type-card .tc-desc { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
-.type-card .tc-check {
-  position: absolute; top: 9px; right: 9px;
-  width: 18px; height: 18px; border-radius: 50%;
-  display: grid; place-items: center;
-  background: var(--accent); color: #fff;
-  opacity: 0; transform: scale(0.6);
-  transition: opacity 0.12s, transform 0.12s;
-}
-.type-card.active { border-color: var(--accent); background: var(--accent-softer); box-shadow: 0 0 0 3px var(--accent-soft); }
-.type-card.active .tc-check { opacity: 1; transform: scale(1); }
-.type-card.active .tc-icon { background: var(--accent-soft); color: var(--accent); }
-
-/* Termin-Karte visuell abgesetzt (gestrichelt, zur Entsprechung im Kalender) */
-.type-card.type-appointment { border-style: dashed; }
-.type-card.type-appointment.active { border-style: dashed; }
-
-@media (max-width: 760px) {
-  .type-cards { grid-template-columns: 1fr; }
-}
 
 .btn-ghost {
   background: var(--surface);
