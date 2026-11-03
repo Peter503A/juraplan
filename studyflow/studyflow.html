@@ -1,0 +1,2784 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+<meta name="theme-color" content="#7c6ff0" />
+<title>StudyFlow – Lernplaner Online Marketing & E-Commerce</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%237c6ff0'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>%E2%9C%A6</text></svg>" />
+<style>
+/* ===================================================================
+   StudyFlow – Lernplaner Online Marketing & E-Commerce
+   Design angelehnt an JuraPlan: violettes Theme, Sidebar-Layout
+   =================================================================== */
+
+:root {
+  --violet-50: #f5f3ff;
+  --violet-100: #ede9fe;
+  --violet-200: #ddd6fe;
+  --violet-300: #c4b5fd;
+  --violet-400: #a78bfa;
+  --violet-500: #8b5cf6;
+  --violet-600: #7c3aed;
+  --violet-700: #6d28d9;
+
+  --accent: #7c6ff0;
+  --accent-hover: #6a5de0;
+  --accent-soft: #ece9fd;
+
+  --bg: #f4f5f8;
+  --surface: #ffffff;
+  --surface-2: #fafbfc;
+  --border: #e8e9ee;
+  --border-strong: #d7d9e0;
+
+  --text: #1f2430;
+  --text-muted: #6b7280;
+  --text-faint: #9aa0ac;
+
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow: 0 1px 3px rgba(20, 20, 40, 0.06), 0 6px 18px rgba(20, 20, 40, 0.05);
+  --shadow-lg: 0 10px 40px rgba(20, 20, 40, 0.18);
+
+  --sidebar-w: 248px;
+
+  /* Modul-Farbpalette (wie Screenshots) */
+  --c-violet: #7c6ff0;
+  --c-amber: #e0ab2a;
+  --c-green: #37a874;
+  --c-red: #d85757;
+  --c-blue: #2f80d6;
+  --c-pink: #c457b9;
+  --c-orange: #e08a3c;
+  --c-teal: #3ca896;
+
+  --ok: #16a34a;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app { height: 100%; }
+
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; font-size: 14px; }
+
+/* ---------- Layout ---------- */
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 18px 14px;
+  overflow-y: auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 6px 16px;
+}
+.brand-logo {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--violet-500), var(--violet-700));
+  display: grid; place-items: center;
+  color: #fff; font-size: 18px;
+  flex-shrink: 0;
+}
+.brand-text strong { display: block; font-size: 17px; letter-spacing: -0.2px; }
+.brand-text strong .accent { color: var(--accent); }
+.brand-text span { font-size: 11.5px; color: var(--text-faint); }
+
+.btn-new {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 11px;
+  padding: 12px;
+  font-size: 14.5px;
+  font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-bottom: 16px;
+  transition: background .15s;
+  box-shadow: 0 2px 8px rgba(124,111,240,.35);
+}
+.btn-new:hover { background: var(--accent-hover); }
+
+.nav { display: flex; flex-direction: column; gap: 2px; }
+.nav-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 9px 11px;
+  border-radius: 9px;
+  border: none; background: none;
+  color: var(--text-muted);
+  font-size: 14.5px; font-weight: 500;
+  text-align: left; width: 100%;
+  transition: all .12s;
+}
+.nav-item:hover { background: var(--surface-2); color: var(--text); }
+.nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.nav-item .ico { font-size: 16px; width: 20px; text-align: center; }
+
+.nav-section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .6px;
+  color: var(--text-faint);
+  padding: 18px 11px 6px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-section-label button {
+  border: none; background: none; color: var(--text-faint);
+  font-size: 17px; line-height: 1; padding: 0 4px; border-radius: 5px;
+}
+.nav-section-label button:hover { background: var(--surface-2); color: var(--accent); }
+
+.module-pill {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 11px; border-radius: 9px;
+  border: none; background: none; width: 100%;
+  color: var(--text); font-size: 14px; text-align: left;
+  transition: background .12s;
+}
+.module-pill:hover { background: var(--surface-2); }
+.module-pill.active { background: var(--accent-soft); }
+.module-pill .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.module-pill .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.module-pill .count { font-size: 12px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+.sidebar-hint {
+  font-size: 12px; color: var(--text-faint);
+  padding: 10px 11px; line-height: 1.5;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.save-status {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: var(--ok); padding: 6px 8px; font-weight: 500;
+}
+.footer-link {
+  display: flex; align-items: center; gap: 8px;
+  border: none; background: none; text-align: left;
+  color: var(--text-muted); font-size: 13px; padding: 7px 8px; border-radius: 7px;
+  width: 100%;
+}
+.footer-link:hover { background: var(--surface-2); color: var(--text); }
+
+/* ---------- Main ---------- */
+.main { overflow-y: auto; padding: 22px 30px 60px; }
+.main-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+  color: var(--text-faint); text-transform: uppercase; margin-bottom: 2px;
+}
+.page-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; margin-bottom: 4px;
+}
+.page-head h1 { font-size: 26px; margin: 0; letter-spacing: -0.4px; }
+.page-head .date-badge { font-size: 13px; color: var(--text-muted); white-space: nowrap; padding-top: 6px; }
+.avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--accent-soft); color: var(--accent);
+  display: inline-grid; place-items: center; font-size: 12px; font-weight: 700;
+  margin-left: 10px; vertical-align: middle;
+}
+.page-sub { color: var(--text-muted); font-size: 14px; margin: 2px 0 20px; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  border: 1px solid var(--border-strong); background: var(--surface);
+  color: var(--text); border-radius: 10px; padding: 9px 15px;
+  font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 7px;
+  transition: all .12s;
+}
+.btn:hover { background: var(--surface-2); border-color: var(--text-faint); }
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 2px 8px rgba(124,111,240,.3); }
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn-ghost { border-color: transparent; background: transparent; }
+.btn-sm { padding: 6px 11px; font-size: 13px; }
+.btn-icon { padding: 8px 10px; }
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+.card-title { font-size: 15px; font-weight: 700; margin: 0 0 4px; }
+.card-sub { font-size: 13px; color: var(--text-muted); margin: 0; }
+
+.empty-state {
+  text-align: center; padding: 48px 20px;
+}
+.empty-state .big-ico { font-size: 40px; }
+.empty-state h2 { font-size: 20px; margin: 14px 0 6px; }
+.empty-state p { color: var(--text-muted); max-width: 440px; margin: 0 auto 18px; }
+
+/* ---------- Grids ---------- */
+.stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 18px; }
+.stat-card { background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+.stat-card .label { font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px; }
+.stat-card .value { font-size: 30px; font-weight: 700; letter-spacing: -0.5px; }
+.stat-card .value small { font-size: 16px; font-weight: 600; color: var(--text-muted); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* ---------- Progress ---------- */
+.progress { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress > span { display: block; height: 100%; background: var(--accent); border-radius: 99px; transition: width .3s; }
+
+/* ---------- Badges ---------- */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 99px;
+  background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.badge-pflicht { background: #eef2ff; color: #4f46e5; border-color: #e0e7ff; }
+.badge-wp { background: #fef3e2; color: #b45309; border-color: #fde8c8; }
+.badge-zusatz { background: #f1f5f9; color: #64748b; border-color: #e2e8f0; }
+.badge-dup { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+.badge-group { background: var(--accent-soft); color: var(--accent); border-color: var(--violet-200); }
+
+/* ---------- Forms ---------- */
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.field label .opt { font-weight: 400; color: var(--text-faint); font-size: 12px; margin-left: 5px; }
+.input, .select, .textarea {
+  width: 100%; padding: 10px 12px;
+  border: 1.5px solid var(--border-strong); border-radius: 10px;
+  background: var(--surface); color: var(--text); transition: border-color .12s, box-shadow .12s;
+}
+.input:focus, .select:focus, .textarea:focus {
+  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.textarea { resize: vertical; min-height: 72px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field-row-3 { display: grid; grid-template-columns: 1fr auto 1fr auto; gap: 8px; align-items: center; }
+.unit { font-size: 13px; color: var(--text-muted); }
+
+/* Type toggle (Lernblock / Termin) */
+.type-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.type-opt {
+  border: 1.5px solid var(--border-strong); border-radius: 12px; padding: 14px;
+  display: flex; align-items: flex-start; gap: 12px; background: var(--surface); position: relative;
+  transition: all .12s;
+}
+.type-opt:hover { border-color: var(--accent); }
+.type-opt.sel { border-color: var(--accent); background: var(--accent-soft); }
+.type-opt .ic { font-size: 20px; }
+.type-opt .t-title { font-weight: 700; font-size: 14px; }
+.type-opt .t-sub { font-size: 12px; color: var(--text-muted); }
+.type-opt .check { position: absolute; top: 10px; right: 10px; color: var(--accent); font-size: 15px; display: none; }
+.type-opt.sel .check { display: block; }
+
+/* Color swatches */
+.color-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.swatch {
+  width: 34px; height: 34px; border-radius: 9px; border: 2px solid transparent; cursor: pointer;
+  position: relative; transition: transform .1s;
+}
+.swatch:hover { transform: scale(1.08); }
+.swatch.sel { border-color: var(--text); box-shadow: 0 0 0 2px #fff inset; }
+.swatch-auto {
+  width: auto; padding: 0 12px; height: 34px; border-radius: 9px; display: inline-flex; align-items: center; gap: 6px;
+  border: 1.5px solid var(--border-strong); background: var(--surface); font-size: 13px; font-weight: 600; color: var(--accent);
+}
+.swatch-auto.sel { border-color: var(--accent); background: var(--accent-soft); }
+
+/* Priority / segmented */
+.segmented { display: flex; gap: 8px; }
+.segmented button {
+  flex: 1; border: 1.5px solid var(--border-strong); background: var(--surface);
+  border-radius: 10px; padding: 9px; font-size: 13.5px; font-weight: 600; color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.segmented button.sel { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+
+.checkbox-row { display: flex; align-items: center; gap: 9px; font-size: 14px; }
+.checkbox-row input { width: 17px; height: 17px; accent-color: var(--accent); }
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(25,25,40,.45);
+  display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px;
+  animation: fade .15s;
+}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  background: var(--surface); border-radius: 16px; box-shadow: var(--shadow-lg);
+  width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; animation: pop .18s;
+}
+.modal.narrow { max-width: 440px; }
+.modal.wide { max-width: 760px; }
+@keyframes pop { from { transform: translateY(12px) scale(.98); opacity: 0; } to { transform: none; opacity: 1; } }
+.modal-head { display: flex; align-items: center; justify-content: space-between; padding: 20px 22px 6px; }
+.modal-head h2 { margin: 0; font-size: 20px; }
+.modal-head .close { border: none; background: none; font-size: 22px; color: var(--text-faint); padding: 4px 8px; border-radius: 7px; line-height: 1; }
+.modal-head .close:hover { background: var(--surface-2); color: var(--text); }
+.modal-body { padding: 14px 22px; }
+.modal-foot {
+  display: flex; justify-content: flex-end; gap: 10px;
+  padding: 16px 22px; border-top: 1px solid var(--border); position: sticky; bottom: 0; background: var(--surface);
+}
+.modal-foot .spacer { margin-right: auto; }
+
+/* ---------- Calendar ---------- */
+.cal-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.cal-nav { display: flex; align-items: center; gap: 4px; }
+.cal-range { font-size: 15px; font-weight: 600; min-width: 170px; }
+.view-switch { margin-left: auto; display: flex; border: 1px solid var(--border-strong); border-radius: 10px; overflow: hidden; }
+.view-switch button { border: none; background: var(--surface); padding: 8px 14px; font-size: 13.5px; font-weight: 600; color: var(--text-muted); }
+.view-switch button.sel { background: var(--accent-soft); color: var(--accent); }
+.view-switch button + button { border-left: 1px solid var(--border); }
+
+.cal-layout { display: grid; grid-template-columns: 1fr 268px; gap: 18px; align-items: start; }
+
+/* Week/day grid */
+.week-grid-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.week-head { display: grid; border-bottom: 1px solid var(--border); }
+.week-head .corner { border-right: 1px solid var(--border); }
+.week-head .day-col {
+  padding: 10px 6px; text-align: center; border-right: 1px solid var(--border); font-size: 12px; color: var(--text-muted);
+}
+.week-head .day-col:last-child { border-right: none; }
+.week-head .day-col .dnum {
+  font-size: 16px; font-weight: 700; color: var(--text); display: inline-grid; place-items: center;
+  width: 30px; height: 30px; border-radius: 50%; margin-top: 2px;
+}
+.week-head .day-col.today .dnum { background: var(--accent); color: #fff; }
+
+.week-scroll { max-height: 62vh; overflow-y: auto; }
+.week-body { display: grid; position: relative; }
+.time-col { border-right: 1px solid var(--border); }
+.time-slot { height: 48px; border-bottom: 1px solid var(--border); font-size: 11px; color: var(--text-faint); text-align: right; padding: 2px 6px 0 0; position: relative; }
+.day-column { border-right: 1px solid var(--border); position: relative; }
+.day-column:last-child { border-right: none; }
+.hour-cell { height: 48px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .1s; }
+.hour-cell:hover { background: var(--accent-soft); }
+
+.event {
+  position: absolute; left: 3px; right: 3px; border-radius: 7px; padding: 4px 7px;
+  font-size: 11.5px; color: #fff; overflow: hidden; cursor: pointer; z-index: 2;
+  box-shadow: 0 1px 3px rgba(0,0,0,.15); border-left: 3px solid rgba(0,0,0,.2);
+}
+.event .ev-title { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.event .ev-time { opacity: .9; font-size: 10.5px; }
+.event.is-termin { border-style: dashed; }
+.event-dot-row { display: flex; gap: 3px; margin-top: 2px; }
+
+/* Month grid */
+.month-grid { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.month-weekdays { display: grid; grid-template-columns: repeat(7,1fr); border-bottom: 1px solid var(--border); }
+.month-weekdays div { padding: 8px; text-align: center; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.month-cells { display: grid; grid-template-columns: repeat(7,1fr); }
+.month-cell { min-height: 96px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6px; cursor: pointer; position: relative; }
+.month-cell:nth-child(7n) { border-right: none; }
+.month-cell:hover { background: var(--surface-2); }
+.month-cell.other { background: var(--surface-2); }
+.month-cell.other .mnum { color: var(--text-faint); }
+.month-cell.today .mnum { background: var(--accent); color: #fff; border-radius: 50%; width: 24px; height: 24px; display: inline-grid; place-items: center; }
+.month-cell .mnum { font-size: 13px; font-weight: 600; }
+.m-event { font-size: 11px; border-radius: 5px; padding: 1px 5px; color: #fff; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-more { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+
+/* Year grid */
+.year-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.mini-month { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; box-shadow: var(--shadow); cursor: pointer; }
+.mini-month:hover { border-color: var(--accent); }
+.mini-month h4 { margin: 0 0 8px; font-size: 14px; text-align: center; }
+.mini-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 1px; }
+.mini-grid span { aspect-ratio: 1; display: grid; place-items: center; font-size: 10px; border-radius: 4px; color: var(--text-muted); position: relative; }
+.mini-grid span.has { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.mini-grid span.today { background: var(--accent); color: #fff; }
+.mini-grid span.wd { color: var(--text-faint); font-weight: 600; }
+
+/* Calendar sidebar */
+.cal-side { display: flex; flex-direction: column; gap: 14px; }
+.cal-side .card { padding: 16px; }
+.cal-side .big-h { font-size: 26px; font-weight: 700; }
+.mini-stat { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; }
+.mini-stat b { font-variant-numeric: tabular-nums; }
+
+/* ---------- Module list ---------- */
+.mod-toolbar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+.search-box { flex: 1; min-width: 200px; position: relative; }
+.search-box input { width: 100%; padding: 10px 12px 10px 36px; border: 1.5px solid var(--border-strong); border-radius: 10px; }
+.search-box input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.search-box .s-ico { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-faint); }
+
+.filter-chips { display: flex; gap: 7px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--border-strong); background: var(--surface); border-radius: 99px; padding: 6px 13px; font-size: 13px; font-weight: 600; color: var(--text-muted); }
+.chip.sel { background: var(--accent-soft); color: var(--accent); border-color: var(--violet-200); }
+
+.group-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 22px 0 10px; padding-bottom: 8px; border-bottom: 2px solid var(--border);
+}
+.group-header h3 { margin: 0; font-size: 16px; }
+.group-header .ects-goal { font-size: 13px; }
+.ects-goal .ok { color: var(--ok); font-weight: 700; }
+.ects-goal .pending { color: var(--text-muted); }
+
+.mod-row {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 11px;
+  padding: 13px 16px; margin-bottom: 8px; transition: all .12s;
+}
+.mod-row:hover { border-color: var(--border-strong); box-shadow: var(--shadow); }
+.mod-row.selected { border-color: var(--accent); background: linear-gradient(0deg, var(--accent-soft), var(--surface) 60%); }
+.mod-check { width: 20px; height: 20px; accent-color: var(--accent); flex-shrink: 0; cursor: pointer; }
+.mod-main { flex: 1; min-width: 0; }
+.mod-main .m-name { font-weight: 600; font-size: 14.5px; }
+.mod-main .m-meta { font-size: 12.5px; color: var(--text-muted); margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.mod-main .m-code { font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; color: var(--text-faint); }
+.mod-side { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.status-select { border: 1px solid var(--border-strong); border-radius: 8px; padding: 5px 8px; font-size: 12.5px; font-weight: 600; }
+
+/* Module detail */
+.mod-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.detail-stat { background: var(--surface-2); border-radius: 10px; padding: 12px 14px; }
+.detail-stat .l { font-size: 12px; color: var(--text-muted); }
+.detail-stat .v { font-size: 18px; font-weight: 700; margin-top: 2px; }
+
+.step-list { list-style: none; padding: 0; margin: 0; }
+.step-list li { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.step-list li:last-child { border-bottom: none; }
+.step-list input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); }
+.step-list .done { text-decoration: line-through; color: var(--text-faint); }
+.step-del { margin-left: auto; border: none; background: none; color: var(--text-faint); font-size: 16px; padding: 2px 6px; border-radius: 5px; }
+.step-del:hover { background: #fee2e2; color: #dc2626; }
+
+/* ---------- Review ---------- */
+.review-period-switch { display: flex; border: 1px solid var(--border-strong); border-radius: 10px; overflow: hidden; }
+.review-period-switch button { border: none; background: var(--surface); padding: 8px 16px; font-weight: 600; font-size: 13.5px; color: var(--text-muted); }
+.review-period-switch button.sel { background: var(--accent-soft); color: var(--accent); }
+
+.module-time-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.module-time-bar .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.module-time-bar .mtb-name { width: 150px; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.module-time-bar .mtb-track { flex: 1; height: 10px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.module-time-bar .mtb-track > span { display: block; height: 100%; border-radius: 99px; }
+.module-time-bar .mtb-val { font-size: 12.5px; color: var(--text-muted); width: 54px; text-align: right; font-variant-numeric: tabular-nums; }
+
+.open-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+.open-item:last-child { border-bottom: none; }
+.open-item .oi-ctx { font-size: 12px; color: var(--text-faint); }
+.open-item button { margin-left: auto; }
+
+.entry-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.entry-row:last-child { border-bottom: none; }
+.entry-row .e-bar { width: 4px; align-self: stretch; border-radius: 3px; }
+.entry-row .e-main { flex: 1; }
+.entry-row .e-title { font-weight: 600; font-size: 14px; }
+.entry-row .e-meta { font-size: 12.5px; color: var(--text-muted); }
+.entry-row .e-time { font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+/* ---------- Settings / Alltag ---------- */
+.setting-block { margin-bottom: 8px; }
+.day-toggles { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; }
+.day-toggle { border: 1.5px solid var(--border-strong); border-radius: 9px; padding: 8px 4px; text-align: center; font-size: 12.5px; font-weight: 600; background: var(--surface); color: var(--text-muted); }
+.day-toggle.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.time-inline { display: inline-flex; gap: 6px; align-items: center; }
+
+.suggestion-slot { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--surface-2); border-radius: 10px; margin-bottom: 8px; border: 1px dashed var(--border-strong); }
+.suggestion-slot .ss-day { font-weight: 700; width: 90px; }
+.suggestion-slot .ss-time { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.suggestion-slot button { margin-left: auto; }
+
+/* ---------- Misc ---------- */
+.empty-mini { text-align: center; color: var(--text-muted); font-size: 13.5px; padding: 18px 10px; }
+.link-btn { border: none; background: none; color: var(--accent); font-weight: 600; font-size: 13.5px; padding: 0; cursor: pointer; }
+.link-btn:hover { text-decoration: underline; }
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--text); color: #fff; padding: 11px 20px; border-radius: 10px;
+  font-size: 13.5px; font-weight: 500; z-index: 200; box-shadow: var(--shadow-lg);
+  animation: toastIn .2s;
+}
+@keyframes toastIn { from { transform: translate(-50%, 12px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+
+.mobile-topbar { display: none; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 82%; max-width: 300px;
+    z-index: 90; transform: translateX(-102%); transition: transform .22s; box-shadow: var(--shadow-lg);
+  }
+  .sidebar.open { transform: none; }
+  .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 80; display: none; }
+  .scrim.show { display: block; }
+  .mobile-topbar {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 40;
+  }
+  .mobile-topbar .menu-btn { border: none; background: none; font-size: 22px; padding: 2px; }
+  .mobile-topbar strong { font-size: 16px; }
+  .main { padding: 16px; }
+  .page-head h1 { font-size: 22px; }
+  .stat-grid { grid-template-columns: 1fr; gap: 10px; }
+  .grid-2, .mod-detail-grid { grid-template-columns: 1fr; }
+  .cal-layout { grid-template-columns: 1fr; }
+  .cal-side { order: -1; }
+  .year-grid { grid-template-columns: repeat(2,1fr); }
+  .field-row { grid-template-columns: 1fr; }
+  .type-toggle { grid-template-columns: 1fr; }
+  .mod-row { flex-wrap: wrap; }
+  .week-head .day-col .dlabel { display: none; }
+}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+"use strict";
+(function(){
+
+var __modules = {};
+var __cache = {};
+function require(key){
+  if (__cache[key]) return __cache[key].exports;
+  var m = { exports: {} };
+  __cache[key] = m;
+  var fn = __modules[key];
+  if (!fn) throw new Error("Modul nicht gefunden: " + key);
+  fn(require, m, m.exports);
+  return m.exports;
+}
+
+__modules["data/moduleCatalog.js"] = function(require, module, exports){
+/*
+ * Vorgefüllter Modulkatalog – Fernstudium Online Marketing & E-Commerce (B.A.)
+ * ---------------------------------------------------------------------------
+ * Jedes Modul hat einen eindeutigen Kurscode (id). Module, die in mehreren
+ * Wahlpflichtgruppen vorkommen, werden NUR EINMAL als Katalogeintrag geführt;
+ * die Zugehörigkeit zu Gruppen steht in `groups`. So entstehen keine Dubletten.
+ *
+ * Felder:
+ *   id          – Kurscode (eindeutige ID)
+ *   name        – Modulname (Teilkurse zusammengefasst, siehe `subCourses`)
+ *   ects        – ECTS-Punkte
+ *   type        – 'pflicht' | 'wahlpflicht' | 'zusatz'
+ *   semester    – Regelsemester (null bei reinen Wahlpflicht-/Zusatzmodulen)
+ *   groups      – Liste von Wahlpflichtgruppen-IDs, in denen das Modul wählbar ist
+ *   examForm    – Prüfungsform (soweit typisch/bekannt)
+ *   subCourses  – optionale Teilkurse (z. B. Marketing I & II)
+ *   duplicateOf – markiert einen bewussten Doppeleintrag (z. B. DLBMSM02-02)
+ */
+
+// Wahlpflichtgruppen mit ECTS-Sollwert
+const electiveGroups = {
+  A: { id: "A", label: "Wahlpflichtbereich A", semester: 5, requiredEcts: 10, note: "10 ECTS auswählen" },
+  B: { id: "B", label: "Wahlpflichtbereich B", semester: 5, requiredEcts: 10, note: "10 ECTS auswählen" },
+  C: { id: "C", label: "Wahlpflichtbereich C", semester: 6, requiredEcts: 10, note: "10 ECTS auswählen" },
+  D: {
+    id: "D",
+    label: "Wahlpflichtbereich D",
+    semester: null,
+    requiredEcts: 30,
+    note: "30 ECTS – entweder Praktikum ODER alle sechs Module (nur ein Weg zählt)",
+    exclusive: true,
+  },
+};
+
+// Prüfungsstatus-Werte
+const EXAM_STATUS = [
+  { id: "offen", label: "Offen", color: "#94a3b8" },
+  { id: "begonnen", label: "Begonnen", color: "#f59e0b" },
+  { id: "gelernt", label: "Gelernt", color: "#3b82f6" },
+  { id: "pruefungsbereit", label: "Prüfungsbereit", color: "#8b5cf6" },
+  { id: "bestanden", label: "Bestanden", color: "#22c55e" },
+  { id: "angerechnet", label: "Angerechnet", color: "#14b8a6" },
+];
+
+// Lernarten für Lernblöcke
+const LEARN_TYPES = [
+  "Lesen",
+  "Verstehen",
+  "Lernen",
+  "Wiederholen",
+  "Klausurvorbereitung",
+  "Hausarbeit/Projekt",
+];
+
+const modules = [
+  // ============ PFLICHTMODULE ============
+  // --- 1. Semester ---
+  { id: "DLBMAR01", name: "Marketing", ects: 5, type: "pflicht", semester: 1, groups: [], examForm: "Klausur",
+    subCourses: ["Marketing I", "Marketing II"] },
+  { id: "DLBWIWARW01", name: "Einführung in das wissenschaftliche Arbeiten für Wirtschaft, Management und Kommunikation", ects: 5, type: "pflicht", semester: 1, groups: [], examForm: "Workbook" },
+  { id: "DLBDSESTA01", name: "Statistik", ects: 5, type: "pflicht", semester: 1, groups: [], examForm: "Klausur" },
+  { id: "DLBMPS01", name: "Konsumentenverhalten", ects: 5, type: "pflicht", semester: 1, groups: [], examForm: "Klausur" },
+  { id: "DLBAPM01", name: "Projekt: Agiles Projektmanagement", ects: 5, type: "pflicht", semester: 1, groups: [], examForm: "Projektbericht" },
+
+  // --- 2. Semester ---
+  { id: "DLBMDR01", name: "Medienrecht", ects: 5, type: "pflicht", semester: 2, groups: [], examForm: "Klausur" },
+  { id: "DLBMSM01", name: "Onlinemarketing", ects: 5, type: "pflicht", semester: 2, groups: [], examForm: "Klausur" },
+  { id: "DLBMMF01", name: "Marktforschung", ects: 5, type: "pflicht", semester: 2, groups: [], examForm: "Klausur" },
+  { id: "DLBMKP01", name: "Kommunikationspolitik", ects: 5, type: "pflicht", semester: 2, groups: [], examForm: "Klausur" },
+  { id: "DLBDT01", name: "Projekt: Design Thinking", ects: 5, type: "pflicht", semester: 2, groups: [], examForm: "Projektbericht" },
+
+  // --- 3. Semester ---
+  { id: "DLBMSM02", name: "Social-Media-Marketing", ects: 5, type: "pflicht", semester: 3, groups: [], examForm: "Klausur" },
+  { id: "DLBMSM02-02", name: "Social-Media-Marketing (zweiter Eintrag)", ects: 5, type: "pflicht", semester: 3, groups: [], examForm: "Klausur",
+    duplicateOf: "DLBMSM02", possibleDuplicate: true },
+  { id: "DLBMSEA01", name: "Search Engine Advertising (SEA)", ects: 5, type: "pflicht", semester: 3, groups: [], examForm: "Klausur" },
+  { id: "DLBMSEO01", name: "Search Engine Optimization (SEO)", ects: 5, type: "pflicht", semester: 3, groups: [], examForm: "Klausur" },
+  { id: "DLBMWA01", name: "Web-Analytics", ects: 5, type: "pflicht", semester: 3, groups: [], examForm: "Klausur" },
+  { id: "DLBMSEM01", name: "Projekt: Suchmaschinenmarketing", ects: 5, type: "pflicht", semester: 3, groups: [], examForm: "Projektbericht" },
+
+  // --- 4. Semester ---
+  { id: "DLBMDBM01", name: "Projekt: Digitale Business-Modelle", ects: 5, type: "pflicht", semester: 4, groups: [], examForm: "Projektbericht" },
+  { id: "DLBKIME01", name: "Seminar: KI im Marketing & E-Commerce", ects: 5, type: "pflicht", semester: 4, groups: [], examForm: "Seminararbeit" },
+  { id: "DLBOSM01", name: "Online Sales Management", ects: 5, type: "pflicht", semester: 4, groups: [], examForm: "Klausur" },
+  { id: "DLBMCJ01", name: "Projekt: Customer Journey", ects: 5, type: "pflicht", semester: 4, groups: [], examForm: "Projektbericht" },
+  { id: "DLBMCRM01", name: "Customer Relationship Management", ects: 5, type: "pflicht", semester: 4, groups: [], examForm: "Klausur" },
+
+  // --- 5. Semester (Pflicht) ---
+  { id: "DLBMCMM01", name: "Projekt: Cross Media Marketing", ects: 5, type: "pflicht", semester: 5, groups: [], examForm: "Projektbericht" },
+
+  // --- 6. Semester (Pflicht) ---
+  { id: "DLBMGHA01", name: "Projekt: Growth Hack Analyse", ects: 5, type: "pflicht", semester: 6, groups: [], examForm: "Projektbericht" },
+  { id: "BBAK01", name: "Bachelorarbeit", ects: 9, type: "pflicht", semester: 6, groups: [], examForm: "Bachelorarbeit" },
+  { id: "BKOL01", name: "Kolloquium", ects: 1, type: "pflicht", semester: 6, groups: [], examForm: "Kolloquium" },
+
+  // ============ WAHLPFLICHTBEREICH A (5. Sem, 10 ECTS) ============
+  { id: "DLBDFC01", name: "Digital Future Commerce", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "C"], examForm: "Klausur" },
+  { id: "DLBINDE01", name: "Innovation im Digital Environment", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A"], examForm: "Klausur" },
+  { id: "DLBECI01", name: "E-Commerce I", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "C"], examForm: "Klausur" },
+  { id: "DLBSMK01", name: "Projekt: Social Media Kampagne", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "C"], examForm: "Projektbericht" },
+  { id: "DLBSOC01", name: "Social Commerce", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "C"], examForm: "Klausur" },
+  { id: "DLBGGH01", name: "Grundlagen Growth Hacking", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "C"], examForm: "Klausur" },
+  { id: "DLBGHT01", name: "Projekt: Growth Hacking Trends", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "C"], examForm: "Projektbericht" },
+  { id: "DLBDSAI01", name: "Artificial Intelligence", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "B"], examForm: "Klausur" },
+  { id: "BBUB01", name: "Buchführung und Bilanzierung", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "B", "C"], examForm: "Klausur" },
+  { id: "BBWL01", name: "Betriebswirtschaftslehre (BWL)", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "B", "C"], examForm: "Klausur" },
+  { id: "BPMG01", name: "Projektmanagement", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "B", "C"], examForm: "Klausur" },
+  { id: "DLBKA01", name: "Kollaboratives Arbeiten", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "B", "C", "D"], examForm: "Workbook" },
+  { id: "BEBD01", name: "Einkauf, Beschaffung und Distribution", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "B", "C"], examForm: "Klausur" },
+  { id: "BINF01", name: "Investition und Finanzierung", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "B", "C"], examForm: "Klausur" },
+  { id: "DLBAIF01", name: "Projekt: AI Fluency – Einführung in die generative KI", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "B", "C"], examForm: "Projektbericht" },
+  { id: "DLSPEN01", name: "Fremdsprache Englisch", ects: 5, type: "wahlpflicht", semester: 5, groups: ["A", "B", "C"], examForm: "Sprachprüfung" },
+
+  // ============ WAHLPFLICHTBEREICH B (5. Sem, 10 ECTS) ============
+  { id: "DLBDHR01", name: "Digital HR", ects: 5, type: "wahlpflicht", semester: 5, groups: ["B", "C"], examForm: "Klausur" },
+  { id: "DLBMMA01", name: "Projekt: Marketing Analytics", ects: 5, type: "wahlpflicht", semester: 5, groups: ["B", "C"], examForm: "Projektbericht" },
+  { id: "DLBECII01", name: "E-Commerce II", ects: 5, type: "wahlpflicht", semester: 5, groups: ["B", "C"], examForm: "Klausur" },
+  { id: "DLBMPP01", name: "Preispolitik", ects: 5, type: "wahlpflicht", semester: 5, groups: ["B", "C"], examForm: "Klausur" },
+  { id: "DLBIM01", name: "Influencer Marketing", ects: 5, type: "wahlpflicht", semester: 5, groups: ["B", "C"], examForm: "Klausur" },
+  { id: "DLBKMS01", name: "Projekt: Konfliktmanagement und Meinungsbildung in Social Media", ects: 5, type: "wahlpflicht", semester: 5, groups: ["B", "C"], examForm: "Projektbericht" },
+  { id: "DLBAGH01", name: "Projekt: Angewandtes Growth Hacking", ects: 5, type: "wahlpflicht", semester: 5, groups: ["B"], examForm: "Projektbericht" },
+  { id: "DLBITGH01", name: "Seminar: IT im Growth Hacking", ects: 5, type: "wahlpflicht", semester: 5, groups: ["B", "C"], examForm: "Seminararbeit" },
+
+  // ============ WAHLPFLICHTBEREICH C (6. Sem, 10 ECTS) ============
+  { id: "DLBALE01", name: "Advanced Leadership I und II", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur",
+    subCourses: ["Advanced Leadership I", "Advanced Leadership II"] },
+  { id: "DLBAMVR01", name: "Augmented, Mixed und Virtual Reality", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBCATM01", name: "Category Management", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBCMS01", name: "Content Management Systeme", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBCM01", name: "Content Marketing", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBSFSC01", name: "Projekt: CRM mit der Salesforce Service Cloud", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Projektbericht" },
+  { id: "DLBCCD01", name: "Customer-Centered Data", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBCCT01", name: "Customer Centric Transformation", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBDABD01", name: "Data Analytics und Big Data", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBDDM01", name: "Data Driven Marketing", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBDMC01", name: "Digital and Mobile Campaigns", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBDFCO01", name: "Digital Finance und Controlling", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBDKP01", name: "Digitale Konsumentenpsychologie", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBGIM01", name: "Gestaltung interaktiver Medien", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBGEUI01", name: "Gestaltung und Ergonomie von User Interfaces", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBGWP01", name: "Grundlagen der Web-Programmierung", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBIMK01", name: "Internationales Marketing", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBIBM01", name: "Internationales Brand Management", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBCV01", name: "Einführung in Computer Vision", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBSCMP01", name: "KI-basierte Medienproduktion: Synthetic Content", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Projektbericht" },
+  { id: "DLBKPR01", name: "Kommunikation und Public Relations", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBMKP02", name: "Marktpsychologie", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBNKP01", name: "Nachhaltigkeit aus Konsumentenperspektive", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBPKP01", name: "Persönlicher Karriereplan", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Portfolio" },
+  { id: "DLBPEP01", name: "Persönlicher Elevator Pitch", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Portfolio" },
+  { id: "DLBGIMCV01", name: "Internationales Brand Management (alt.)", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBNKPP01", name: "Projekt: Nachhaltigkeit aus Konsumentenperspektive", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Projektbericht" },
+  { id: "DLBWSD01", name: "Projekt: Webshop Development", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Projektbericht" },
+  { id: "DLBSFF01", name: "Project: Salesforce Fundamentals", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Projektbericht" },
+  { id: "DLBATD01", name: "Seminar: Aktuelle Themen der Digitalisierung", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Seminararbeit" },
+  { id: "DLBSMM01", name: "Social Media Monitoring", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBSTC01", name: "Statistical Computing", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBSG01", name: "Studium Generale I und II", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Workbook",
+    subCourses: ["Studium Generale I", "Studium Generale II"] },
+  { id: "DLBWSP01", name: "Webshop und Plattformen", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Klausur" },
+  { id: "DLBAWS01", name: "Project: AWS – Cloud Essentials und Cloud Advanced", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Projektbericht",
+    subCourses: ["Cloud Essentials", "Cloud Advanced"] },
+  { id: "DLSPFR01", name: "Fremdsprache Französisch", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Sprachprüfung" },
+  { id: "DLSPIT01", name: "Fremdsprache Italienisch", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Sprachprüfung" },
+  { id: "DLSPSP01", name: "Fremdsprache Spanisch", ects: 5, type: "wahlpflicht", semester: 6, groups: ["C"], examForm: "Sprachprüfung" },
+
+  // ============ WAHLPFLICHTBEREICH D (30 ECTS) ============
+  // Weg 1: Praktikum
+  { id: "DLBPOME01", name: "Praktikum: Online-Marketing & E-Commerce", ects: 30, type: "wahlpflicht", semester: null, groups: ["D"], examForm: "Praktikumsbericht",
+    dPath: "praktikum" },
+  // Weg 2: Alle sechs Module
+  { id: "DLBIKO01", name: "Interaktion und Kommunikation in Organisationen", ects: 5, type: "wahlpflicht", semester: null, groups: ["D"], examForm: "Klausur", dPath: "module" },
+  { id: "DLBIEH01", name: "Interkulturelle und ethische Handlungskompetenzen", ects: 5, type: "wahlpflicht", semester: null, groups: ["D"], examForm: "Klausur", dPath: "module" },
+  { id: "DLBKAD01", name: "Kollaboratives Arbeiten (WPB D)", ects: 5, type: "wahlpflicht", semester: null, groups: ["D"], examForm: "Workbook", dPath: "module" },
+  { id: "DLBPS01", name: "Personal Skills", ects: 5, type: "wahlpflicht", semester: null, groups: ["D"], examForm: "Portfolio", dPath: "module" },
+  { id: "DLBPSP01", name: "Projekt: Public Speaking", ects: 5, type: "wahlpflicht", semester: null, groups: ["D"], examForm: "Projektbericht", dPath: "module" },
+  { id: "DLBKMM01", name: "Konfliktmanagement und Mediation", ects: 5, type: "wahlpflicht", semester: null, groups: ["D"], examForm: "Klausur", dPath: "module" },
+
+  // ============ ZUSATZANGEBOTE (ohne ECTS für den Bachelor) ============
+  { id: "ZUS-IU01", name: "IU mitgestalten", ects: 0, type: "zusatz", semester: null, groups: [], examForm: "—" },
+  { id: "ZUS-SPEN", name: "Sprachtraining Englisch", ects: 0, type: "zusatz", semester: null, groups: [], examForm: "—" },
+  { id: "ZUS-SPFR", name: "Sprachtraining Französisch", ects: 0, type: "zusatz", semester: null, groups: [], examForm: "—" },
+  { id: "ZUS-SPIT", name: "Sprachtraining Italienisch", ects: 0, type: "zusatz", semester: null, groups: [], examForm: "—" },
+  { id: "ZUS-SPSP", name: "Sprachtraining Spanisch", ects: 0, type: "zusatz", semester: null, groups: [], examForm: "—" },
+];
+
+
+exports.electiveGroups = electiveGroups;
+exports.EXAM_STATUS = EXAM_STATUS;
+exports.LEARN_TYPES = LEARN_TYPES;
+exports.modules = modules;
+};
+__modules["src/utils.js"] = function(require, module, exports){
+/* ===================================================================
+   Utilities – Datum, Zeit, Formatierung (deutsch)
+   =================================================================== */
+
+const WEEKDAYS_SHORT = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+const WEEKDAYS_LONG = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+const WEEKDAYS_MON = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]; // montagsbasiert
+const MONTHS = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+const MONTHS_SHORT = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
+
+const COLORS = [
+  { name: "Violett", val: "#7c6ff0" },
+  { name: "Gelb", val: "#e0ab2a" },
+  { name: "Grün", val: "#37a874" },
+  { name: "Rot", val: "#d85757" },
+  { name: "Blau", val: "#2f80d6" },
+  { name: "Pink", val: "#c457b9" },
+  { name: "Orange", val: "#e08a3c" },
+  { name: "Teal", val: "#3ca896" },
+];
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+/* ---------- Date keys ---------- */
+function toDateKey(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+function fromDateKey(key) {
+  const [y, m, d] = key.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+function todayKey() { return toDateKey(new Date()); }
+
+function isSameDay(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+/* ---------- Week (ISO, Montag-Start) ---------- */
+function startOfWeek(d) {
+  const r = new Date(d);
+  const day = (r.getDay() + 6) % 7; // 0 = Montag
+  r.setDate(r.getDate() - day);
+  r.setHours(0, 0, 0, 0);
+  return r;
+}
+function endOfWeek(d) {
+  const r = startOfWeek(d);
+  r.setDate(r.getDate() + 6);
+  return r;
+}
+function isoWeek(d) {
+  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const dayNum = (date.getUTCDay() + 6) % 7;
+  date.setUTCDate(date.getUTCDate() - dayNum + 3);
+  const firstThursday = new Date(Date.UTC(date.getUTCFullYear(), 0, 4));
+  const diff = (date - firstThursday) / 86400000;
+  const week = 1 + Math.round((diff - 3 + ((firstThursday.getUTCDay() + 6) % 7)) / 7);
+  return week;
+}
+function weekKey(d) {
+  const date = new Date(d);
+  const yearForWeek = (() => {
+    const tmp = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = (tmp.getUTCDay() + 6) % 7;
+    tmp.setUTCDate(tmp.getUTCDate() - dayNum + 3);
+    return tmp.getUTCFullYear();
+  })();
+  return `${yearForWeek}-W${String(isoWeek(d)).padStart(2, "0")}`;
+}
+function monthKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function addDays(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
+function addMonths(d, n) { const r = new Date(d); r.setMonth(r.getMonth() + n); return r; }
+
+/* ---------- Formatting ---------- */
+function fmtDayShort(d) { return `${d.getDate()}. ${MONTHS_SHORT[d.getMonth()]}`; }
+function fmtDayFull(d) { return `${WEEKDAYS_LONG[d.getDay()]}, ${d.getDate()}. ${MONTHS[d.getMonth()]} ${d.getFullYear()}`; }
+function fmtRange(a, b) {
+  const sameMonth = a.getMonth() === b.getMonth();
+  if (sameMonth) return `${a.getDate()}. – ${b.getDate()}. ${MONTHS_SHORT[b.getMonth()]}`;
+  return `${a.getDate()}. ${MONTHS_SHORT[a.getMonth()]} – ${b.getDate()}. ${MONTHS_SHORT[b.getMonth()]}`;
+}
+function fmtDE(key) { // YYYY-MM-DD -> DD.MM.YYYY
+  if (!key) return "";
+  const [y, m, d] = key.split("-");
+  return `${d}.${m}.${y}`;
+}
+
+/* ---------- Time helpers ---------- */
+function timeToMin(t) {
+  if (!t) return 0;
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+function minToTime(min) {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+function durationMin(from, to) {
+  const d = timeToMin(to) - timeToMin(from);
+  return d > 0 ? d : 0;
+}
+/** Minuten -> "2 h 30 min" / "45 min" / "3 h" */
+function fmtDuration(min) {
+  if (!min) return "0 min";
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  if (h && m) return `${h} h ${m} min`;
+  if (h) return `${h} h`;
+  return `${m} min`;
+}
+function fmtHours(min) {
+  const h = min / 60;
+  return (Math.round(h * 10) / 10).toString().replace(".", ",");
+}
+
+/* ---------- HTML escape ---------- */
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+/* ---------- Contrast text for colored bg ---------- */
+function textOn(hex) {
+  const c = hex.replace("#", "");
+  const r = parseInt(c.slice(0, 2), 16), g = parseInt(c.slice(2, 4), 16), b = parseInt(c.slice(4, 6), 16);
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return lum > 0.62 ? "#1f2430" : "#ffffff";
+}
+
+
+exports.WEEKDAYS_SHORT = WEEKDAYS_SHORT;
+exports.WEEKDAYS_LONG = WEEKDAYS_LONG;
+exports.WEEKDAYS_MON = WEEKDAYS_MON;
+exports.MONTHS = MONTHS;
+exports.MONTHS_SHORT = MONTHS_SHORT;
+exports.COLORS = COLORS;
+exports.uid = uid;
+exports.toDateKey = toDateKey;
+exports.fromDateKey = fromDateKey;
+exports.todayKey = todayKey;
+exports.isSameDay = isSameDay;
+exports.startOfWeek = startOfWeek;
+exports.endOfWeek = endOfWeek;
+exports.isoWeek = isoWeek;
+exports.weekKey = weekKey;
+exports.monthKey = monthKey;
+exports.addDays = addDays;
+exports.addMonths = addMonths;
+exports.fmtDayShort = fmtDayShort;
+exports.fmtDayFull = fmtDayFull;
+exports.fmtRange = fmtRange;
+exports.fmtDE = fmtDE;
+exports.timeToMin = timeToMin;
+exports.minToTime = minToTime;
+exports.durationMin = durationMin;
+exports.fmtDuration = fmtDuration;
+exports.fmtHours = fmtHours;
+exports.esc = esc;
+exports.textOn = textOn;
+};
+__modules["src/store.js"] = function(require, module, exports){
+/* ===================================================================
+   Store – zentraler Zustand mit automatischer localStorage-Persistenz
+   =================================================================== */
+
+const STORAGE_KEY = "studyflow_data_v1";
+
+const DEFAULT_SETTINGS = {
+  studentName: "Studium",
+  initials: "OM",
+  // Arbeitszeit: Di–Do 7–15 Uhr
+  work: { days: [2, 3, 4], from: "07:00", to: "15:00" },
+  // Lernfrei-Tage (zum Lernen gut geeignet)
+  freeLearnDays: [1, 5], // Mo, Fr
+  // Fitnessstudio: Mo, Di, Do, Fr ~1–1,5 h
+  gym: { days: [1, 2, 4, 5], durationMin: 75, preferredTime: "17:00" },
+  // Mindestens ein Ruhetag am Wochenende
+  restDay: 0, // Sonntag
+  // Tagesfenster für Lernvorschläge
+  wakeFrom: "07:00",
+  wakeTo: "21:00",
+  // Studienzieltermin (August)
+  targetDate: "2027-08-31",
+  weeklyGoalHours: 20,
+};
+
+const DEFAULT_DATA = {
+  version: 1,
+  settings: { ...DEFAULT_SETTINGS },
+  entries: [],          // Lernblöcke + Termine
+  selectedModules: {},  // id -> { status, estHours, targetDate, color, pages:{done,total}, tasks:[{id,text,done}], notes, dChoice }
+  notes: {},            // "day-YYYY-MM-DD" | "week-YYYY-Www" | "month-YYYY-MM" -> text
+  weekGoals: {},        // "YYYY-Www" -> hours
+  monthGoals: {},       // "YYYY-MM" -> hours
+  dPathChoice: null,    // 'praktikum' | 'module' | null  (Wahlpflichtbereich D)
+};
+
+let data = load();
+const listeners = new Set();
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return structuredClone(DEFAULT_DATA);
+    const parsed = JSON.parse(raw);
+    // merge, damit neue Felder nicht fehlen
+    return {
+      ...structuredClone(DEFAULT_DATA),
+      ...parsed,
+      settings: { ...DEFAULT_SETTINGS, ...(parsed.settings || {}) },
+    };
+  } catch (e) {
+    console.warn("Konnte Daten nicht laden, starte frisch:", e);
+    return structuredClone(DEFAULT_DATA);
+  }
+}
+
+let saveTimer = null;
+function persist() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {
+      console.error("Speichern fehlgeschlagen:", e);
+    }
+  }, 120);
+}
+
+function getState() { return data; }
+
+function subscribe(fn) {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+
+function setState(mutator) {
+  mutator(data);
+  persist();
+  listeners.forEach((fn) => fn(data));
+}
+
+/* ---------- Entries (Lernblöcke & Termine) ---------- */
+function upsertEntry(entry) {
+  setState((d) => {
+    const i = d.entries.findIndex((e) => e.id === entry.id);
+    if (i >= 0) d.entries[i] = entry;
+    else d.entries.push(entry);
+  });
+}
+
+function deleteEntry(id) {
+  setState((d) => { d.entries = d.entries.filter((e) => e.id !== id); });
+}
+
+/* ---------- Module ---------- */
+function toggleModule(mod) {
+  setState((d) => {
+    if (d.selectedModules[mod.id]) {
+      delete d.selectedModules[mod.id];
+    } else {
+      d.selectedModules[mod.id] = {
+        status: "offen",
+        estHours: 0,
+        color: mod._defaultColor || "#7c6ff0",
+        pages: { done: 0, total: 0 },
+        tasks: [],
+        notes: "",
+        targetDate: "",
+      };
+    }
+  });
+}
+
+function updateModule(id, patch) {
+  setState((d) => {
+    if (d.selectedModules[id]) Object.assign(d.selectedModules[id], patch);
+  });
+}
+
+/* ---------- Notizen & Ziele ---------- */
+function setNote(key, text) { setState((d) => { d.notes[key] = text; }); }
+function setWeekGoal(key, h) { setState((d) => { d.weekGoals[key] = h; }); }
+function setMonthGoal(key, h) { setState((d) => { d.monthGoals[key] = h; }); }
+function setSettings(patch) { setState((d) => { Object.assign(d.settings, patch); }); }
+function setDPathChoice(choice) { setState((d) => { d.dPathChoice = choice; }); }
+
+/* ---------- Export / Import ---------- */
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `studyflow-export-${stamp}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importJSON(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        if (!parsed || typeof parsed !== "object") throw new Error("Ungültiges Format");
+        setState((d) => {
+          d.settings = { ...DEFAULT_SETTINGS, ...(parsed.settings || {}) };
+          d.entries = Array.isArray(parsed.entries) ? parsed.entries : [];
+          d.selectedModules = parsed.selectedModules || {};
+          d.notes = parsed.notes || {};
+          d.weekGoals = parsed.weekGoals || {};
+          d.monthGoals = parsed.monthGoals || {};
+          d.dPathChoice = parsed.dPathChoice ?? null;
+        });
+        resolve();
+      } catch (e) { reject(e); }
+    };
+    reader.onerror = reject;
+    reader.readAsText(file);
+  });
+}
+
+function resetAll() {
+  setState((d) => {
+    const fresh = structuredClone(DEFAULT_DATA);
+    Object.keys(d).forEach((k) => delete d[k]);
+    Object.assign(d, fresh);
+  });
+}
+
+
+exports.getState = getState;
+exports.subscribe = subscribe;
+exports.setState = setState;
+exports.upsertEntry = upsertEntry;
+exports.deleteEntry = deleteEntry;
+exports.toggleModule = toggleModule;
+exports.updateModule = updateModule;
+exports.setNote = setNote;
+exports.setWeekGoal = setWeekGoal;
+exports.setMonthGoal = setMonthGoal;
+exports.setSettings = setSettings;
+exports.setDPathChoice = setDPathChoice;
+exports.exportJSON = exportJSON;
+exports.importJSON = importJSON;
+exports.resetAll = resetAll;
+};
+__modules["src/dom.js"] = function(require, module, exports){
+/* ===================================================================
+   DOM-Helfer – minimaler Ersatz für ein Framework
+   =================================================================== */
+
+/** Element erzeugen: el('div.klasse#id', {attrs}, [children|string]) */
+function el(tag, attrs = {}, children = []) {
+  let tagName = "div";
+  const classes = [];
+  let id = null;
+
+  const m = tag.match(/^([a-zA-Z0-9]+)?((?:[.#][\w-]+)*)$/);
+  if (m) {
+    if (m[1]) tagName = m[1];
+    const rest = m[2] || "";
+    rest.split(/(?=[.#])/).forEach((tok) => {
+      if (tok.startsWith(".")) classes.push(tok.slice(1));
+      else if (tok.startsWith("#")) id = tok.slice(1);
+    });
+  }
+
+  const node = document.createElement(tagName);
+  if (classes.length) node.className = classes.join(" ");
+  if (id) node.id = id;
+
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === "class") node.className += (node.className ? " " : "") + v;
+    else if (k === "html") node.innerHTML = v;
+    else if (k === "text") node.textContent = v;
+    else if (k === "style" && typeof v === "object") Object.assign(node.style, v);
+    else if (k.startsWith("on") && typeof v === "function") node.addEventListener(k.slice(2).toLowerCase(), v);
+    else if (k === "value") node.value = v;
+    else if (k === "checked") node.checked = !!v;
+    else if (k === "disabled") node.disabled = !!v;
+    else node.setAttribute(k, v);
+  }
+
+  const kids = Array.isArray(children) ? children : [children];
+  for (const c of kids) {
+    if (c == null || c === false) continue;
+    node.appendChild(typeof c === "string" || typeof c === "number" ? document.createTextNode(String(c)) : c);
+  }
+  return node;
+}
+
+function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+
+/* ---------- Modal ---------- */
+let activeModal = null;
+
+function openModal(contentNode, { size = "" } = {}) {
+  closeModal();
+  const overlay = el(".modal-overlay", {
+    onclick: (e) => { if (e.target === overlay) closeModal(); },
+  }, [el(`.modal${size ? "." + size : ""}`, {}, [contentNode])]);
+  document.body.appendChild(overlay);
+  activeModal = overlay;
+  const esc = (e) => { if (e.key === "Escape") closeModal(); };
+  document.addEventListener("keydown", esc);
+  overlay._esc = esc;
+  return overlay;
+}
+
+function closeModal() {
+  if (activeModal) {
+    document.removeEventListener("keydown", activeModal._esc);
+    activeModal.remove();
+    activeModal = null;
+  }
+}
+
+/* ---------- Toast ---------- */
+let toastTimer = null;
+function toast(msg) {
+  const existing = document.querySelector(".toast");
+  if (existing) existing.remove();
+  const t = el(".toast", { text: msg });
+  document.body.appendChild(t);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.remove(), 2600);
+}
+
+/* ---------- Confirm ---------- */
+function confirmDialog(message, onYes, { danger = false, yesLabel = "OK" } = {}) {
+  const body = el(".modal-body", {}, [el("p", { text: message, style: { margin: "6px 0 2px", fontSize: "15px" } })]);
+  const foot = el(".modal-foot", {}, [
+    el("button.btn", { text: "Abbrechen", onclick: closeModal }),
+    el(`button.btn.btn-primary`, {
+      text: yesLabel,
+      style: danger ? { background: "#dc2626", borderColor: "#dc2626", boxShadow: "none" } : {},
+      onclick: () => { closeModal(); onYes(); },
+    }),
+  ]);
+  openModal(el("div", {}, [
+    el(".modal-head", {}, [el("h2", { text: "Bestätigen" }), el("button.close", { html: "&times;", onclick: closeModal })]),
+    body, foot,
+  ]), { size: "narrow" });
+}
+
+
+exports.el = el;
+exports.clear = clear;
+exports.openModal = openModal;
+exports.closeModal = closeModal;
+exports.toast = toast;
+exports.confirmDialog = confirmDialog;
+};
+__modules["src/modules.js"] = function(require, module, exports){
+/* ===================================================================
+   Modul-Helfer: Katalog-Zugriff, ECTS-Berechnung, Fortschritt
+   =================================================================== */
+const { modules, electiveGroups } = require("data/moduleCatalog.js");
+const { getState } = require("src/store.js");
+
+const byId = new Map(modules.map((m) => [m.id, m]));
+
+function catalogById(id) { return byId.get(id) || {}; }
+function allModules() { return modules; }
+function groups() { return electiveGroups; }
+
+/** Pflichtmodule nach Semester gruppiert */
+function pflichtBySemester() {
+  const map = {};
+  modules.filter((m) => m.type === "pflicht").forEach((m) => {
+    (map[m.semester] ||= []).push(m);
+  });
+  return map;
+}
+
+/** Module einer Wahlpflichtgruppe */
+function modulesInGroup(groupId) {
+  return modules.filter((m) => m.groups.includes(groupId));
+}
+
+function zusatzModules() {
+  return modules.filter((m) => m.type === "zusatz");
+}
+
+/** Gewählte Module (inkl. Katalogdaten + User-State) */
+function selectedModulesDetailed() {
+  const d = getState();
+  return Object.entries(d.selectedModules).map(([id, user]) => ({
+    ...catalogById(id),
+    id,
+    user,
+  }));
+}
+
+/** Zählt das Modul zum Studienfortschritt?
+ *  - Pflicht: immer (wenn gewählt / automatisch)
+ *  - Wahlpflicht D: nur der gewählte Pfad zählt
+ *  - Zusatz: nie (0 ECTS)
+ */
+function countsTowardProgress(mod, dPathChoice) {
+  if (mod.type === "zusatz") return false;
+  if (mod.groups && mod.groups.includes("D")) {
+    if (dPathChoice === "praktikum") return mod.dPath === "praktikum";
+    if (dPathChoice === "module") return mod.dPath === "module";
+    return false; // noch kein Weg gewählt
+  }
+  return true;
+}
+
+/** ECTS je Wahlpflichtgruppe aus aktuell gewählten Modulen */
+function ectsSelectedInGroup(groupId) {
+  const d = getState();
+  let sum = 0;
+  Object.keys(d.selectedModules).forEach((id) => {
+    const m = catalogById(id);
+    if (m.groups && m.groups.includes(groupId)) {
+      if (groupId === "D" && !countsTowardProgress(m, d.dPathChoice)) return;
+      sum += m.ects || 0;
+    }
+  });
+  return sum;
+}
+
+/** Gesamt-ECTS-Fortschritt (Pflicht + gewählte Wahlpflicht, Bachelor-relevant) */
+function totalEctsProgress() {
+  const d = getState();
+  let earned = 0;      // bestanden/angerechnet
+  let planned = 0;     // alle gewählten/pflicht zählenden Module
+  const TOTAL_BACHELOR = 180;
+
+  // Pflichtmodule zählen immer zum Studienplan (auch wenn nicht explizit gewählt)
+  modules.filter((m) => m.type === "pflicht").forEach((m) => {
+    planned += m.ects;
+    const u = d.selectedModules[m.id];
+    if (u && (u.status === "bestanden" || u.status === "angerechnet")) earned += m.ects;
+  });
+
+  // Wahlpflicht: nur gewählte, die zum Fortschritt zählen
+  Object.keys(d.selectedModules).forEach((id) => {
+    const m = catalogById(id);
+    if (m.type !== "wahlpflicht") return;
+    if (!countsTowardProgress(m, d.dPathChoice)) return;
+    planned += m.ects;
+    const u = d.selectedModules[id];
+    if (u && (u.status === "bestanden" || u.status === "angerechnet")) earned += m.ects;
+  });
+
+  return { earned, planned, total: TOTAL_BACHELOR };
+}
+
+/** Modul-Fortschritt in % (gewichtet aus Seiten + Aufgaben + Status) */
+function moduleProgressPct(user) {
+  if (!user) return 0;
+  const statusWeight = { offen: 0, begonnen: 20, gelernt: 60, pruefungsbereit: 85, bestanden: 100, angerechnet: 100 };
+  let base = statusWeight[user.status] ?? 0;
+
+  const parts = [];
+  if (user.pages && user.pages.total > 0) parts.push(Math.min(100, (user.pages.done / user.pages.total) * 100));
+  if (user.tasks && user.tasks.length > 0) parts.push((user.tasks.filter((t) => t.done).length / user.tasks.length) * 100);
+
+  if (parts.length) {
+    const detail = parts.reduce((a, b) => a + b, 0) / parts.length;
+    // Mische Status (40%) und Detailfortschritt (60%)
+    return Math.round(base * 0.4 + detail * 0.6);
+  }
+  return Math.round(base);
+}
+
+
+exports.catalogById = catalogById;
+exports.allModules = allModules;
+exports.groups = groups;
+exports.pflichtBySemester = pflichtBySemester;
+exports.modulesInGroup = modulesInGroup;
+exports.zusatzModules = zusatzModules;
+exports.selectedModulesDetailed = selectedModulesDetailed;
+exports.countsTowardProgress = countsTowardProgress;
+exports.ectsSelectedInGroup = ectsSelectedInGroup;
+exports.totalEctsProgress = totalEctsProgress;
+exports.moduleProgressPct = moduleProgressPct;
+};
+__modules["src/entryModal.js"] = function(require, module, exports){
+/* ===================================================================
+   Eintrags-Modal: Lernblock / Termin anlegen & bearbeiten
+   (entspricht "Neuer Eintrag" aus den Screenshots)
+   =================================================================== */
+const { el, openModal, closeModal, confirmDialog } = require("src/dom.js");
+const { getState, upsertEntry, deleteEntry } = require("src/store.js");
+const { COLORS, uid, todayKey } = require("src/utils.js");
+const { LEARN_TYPES } = require("data/moduleCatalog.js");
+const { catalogById } = require("src/modules.js");
+
+function openEntryModal(existing = null, presets = {}) {
+  const d = getState();
+  const isEdit = !!existing;
+
+  // Default-Werte
+  const state = existing ? { ...existing } : {
+    id: uid(),
+    kind: "lernblock",           // 'lernblock' | 'termin'
+    title: "",
+    moduleId: "",
+    date: presets.date || todayKey(),
+    color: "auto",
+    from: presets.from || "10:00",
+    to: presets.to || "11:00",
+    priority: "normal",
+    learnType: "Lesen",
+    note: "",
+    doneH: 0,
+    doneM: 0,
+    openPoints: "",
+    carryOver: false,
+  };
+
+  const selMods = Object.keys(d.selectedModules).map((id) => ({ id, ...catalogById(id) }))
+    .filter((m) => m.name);
+
+  let node;
+
+  function rebuild() {
+    const fresh = buildForm();
+    node.replaceWith(fresh);
+    node = fresh;
+  }
+
+  function buildForm() {
+    const isLern = state.kind === "lernblock";
+
+    // Typ-Toggle
+    const typeToggle = el(".type-toggle", {}, [
+      el(`.type-opt${isLern ? ".sel" : ""}`, { onclick: () => { state.kind = "lernblock"; rebuild(); } }, [
+        el(".ic", { text: "📖" }),
+        el("div", {}, [el(".t-title", { text: "Lernblock" }), el(".t-sub", { text: "Zählt zur Lernzeit" })]),
+        el(".check", { text: "✓" }),
+      ]),
+      el(`.type-opt${!isLern ? ".sel" : ""}`, { onclick: () => { state.kind = "termin"; rebuild(); } }, [
+        el(".ic", { text: "📅" }),
+        el("div", {}, [el(".t-title", { text: "Termin" }), el(".t-sub", { text: "z. B. Vorlesung, Prüfung" })]),
+        el(".check", { text: "✓" }),
+      ]),
+    ]);
+
+    // Titel
+    const titleField = el(".field", {}, [
+      el("label", { text: "Titel" }),
+      el("input.input", {
+        value: state.title,
+        placeholder: isLern ? "z. B. Onlinemarketing – Kapitel 3" : "z. B. Online-Klausur SEO",
+        oninput: (e) => { state.title = e.target.value; },
+      }),
+    ]);
+
+    // Modul + Datum
+    const moduleSelect = el("select.select", { onchange: (e) => { state.moduleId = e.target.value; } }, [
+      el("option", { value: "", text: "Ohne Modul" }),
+      ...selMods.map((m) => el("option", { value: m.id, text: m.name + ` (${m.id})`, selected: state.moduleId === m.id })),
+    ]);
+    const modDateRow = el(".field-row", {}, [
+      el(".field", { style: { margin: 0 } }, [el("label", { text: "Modul" }), moduleSelect]),
+      el(".field", { style: { margin: 0 } }, [
+        el("label", { text: "Datum" }),
+        el("input.input", { type: "date", value: state.date, onchange: (e) => { state.date = e.target.value; } }),
+      ]),
+    ]);
+
+    // Farbe
+    const colorRow = el(".field", {}, [
+      el("label", {}, [document.createTextNode("Farbe "), el("span.opt", { text: "Standard: Modulfarbe. Eigene Farbe hebt den Eintrag hervor." })]),
+      el(".color-row", {}, [
+        el(`.swatch-auto${state.color === "auto" ? ".sel" : ""}`, {
+          onclick: () => { state.color = "auto"; rebuild(); },
+        }, [el("span", { text: "◇" }), document.createTextNode("Auto")]),
+        ...COLORS.map((c) => el(`.swatch${state.color === c.val ? ".sel" : ""}`, {
+          style: { background: c.val }, title: c.name,
+          onclick: () => { state.color = c.val; rebuild(); },
+        })),
+      ]),
+    ]);
+
+    // Von / Bis
+    const timeRow = el(".field-row", {}, [
+      el(".field", { style: { margin: 0 } }, [el("label", { text: "Von" }), el("input.input", { type: "time", value: state.from, onchange: (e) => { state.from = e.target.value; } })]),
+      el(".field", { style: { margin: 0 } }, [el("label", { text: "Bis" }), el("input.input", { type: "time", value: state.to, onchange: (e) => { state.to = e.target.value; } })]),
+    ]);
+
+    // Lernart (nur Lernblock)
+    const learnTypeField = isLern ? el(".field", {}, [
+      el("label", { text: "Lernart" }),
+      el("select.select", { onchange: (e) => { state.learnType = e.target.value; } },
+        LEARN_TYPES.map((t) => el("option", { value: t, text: t, selected: state.learnType === t }))),
+    ]) : null;
+
+    // Priorität
+    const priorityField = el(".field", {}, [
+      el("label", { text: "Priorität" }),
+      el(".segmented", {}, [
+        el(`button${state.priority === "normal" ? ".sel" : ""}`, { text: "Normal", onclick: () => { state.priority = "normal"; rebuild(); } }),
+        el(`button${state.priority === "wichtig" ? ".sel" : ""}`, { html: "☆ Wichtig", onclick: () => { state.priority = "wichtig"; rebuild(); } }),
+        el(`button${state.priority === "dringend" ? ".sel" : ""}`, { html: "⚠ Dringend", onclick: () => { state.priority = "dringend"; rebuild(); } }),
+      ]),
+    ]);
+
+    // Notiz
+    const noteField = el(".field", {}, [
+      el("label", {}, [document.createTextNode("Notiz "), el("span.opt", { text: "Pro Eintrag frei notieren." })]),
+      el("textarea.textarea", { placeholder: "Gedanken, Teilaufgaben, offene Fragen …", oninput: (e) => { state.note = e.target.value; } }, state.note || ""),
+    ]);
+
+    // Gelernt (nur Lernblock)
+    const doneField = isLern ? el(".field", {}, [
+      el("label", {}, [document.createTextNode("Gelernt "), el("span.opt", { text: "Tatsächlich gelernte Zeit – erscheint im Wochenrückblick." })]),
+      el(".field-row-3", {}, [
+        el("input.input", { type: "number", min: "0", value: state.doneH, oninput: (e) => { state.doneH = +e.target.value || 0; } }),
+        el("span.unit", { text: "Std." }),
+        el("input.input", { type: "number", min: "0", max: "59", value: state.doneM, oninput: (e) => { state.doneM = +e.target.value || 0; } }),
+        el("span.unit", { text: "Min." }),
+      ]),
+    ]) : null;
+
+    // Offene Punkte (nur Lernblock)
+    const openField = isLern ? el(".field", {}, [
+      el("label", {}, [document.createTextNode("Offene Punkte "), el("span.opt", { text: "optional" })]),
+      el("textarea.textarea", { placeholder: "Optional: Was fehlt noch oder willst du wiederholen? …", oninput: (e) => { state.openPoints = e.target.value; } }, state.openPoints || ""),
+    ]) : null;
+
+    const carryField = isLern ? el(".checkbox-row", { style: { padding: "4px 0 2px" } }, [
+      el("input", { type: "checkbox", checked: state.carryOver, onchange: (e) => { state.carryOver = e.target.checked; } }),
+      el("span", { text: "In nächste Woche mitnehmen" }),
+    ]) : null;
+
+    return el(".modal-body", {}, [
+      el(".field", {}, [el("label", { text: "Typ" }), typeToggle]),
+      titleField,
+      modDateRow,
+      colorRow,
+      timeRow,
+      learnTypeField,
+      priorityField,
+      noteField,
+      doneField,
+      openField,
+      carryField,
+    ]);
+  }
+
+  node = buildForm();
+
+  const foot = el(".modal-foot", {}, [
+    isEdit ? el("button.btn.btn-ghost.spacer", {
+      html: "🗑 Löschen",
+      style: { color: "#dc2626" },
+      onclick: () => confirmDialog("Diesen Eintrag wirklich löschen?", () => { deleteEntry(state.id); closeModal(); }, { danger: true, yesLabel: "Löschen" }),
+    }) : null,
+    el("button.btn", { text: "Abbrechen", onclick: closeModal }),
+    el("button.btn.btn-primary", {
+      text: "Speichern",
+      onclick: () => {
+        if (!state.title.trim()) { state.title = state.kind === "lernblock" ? "Lernblock" : "Termin"; }
+        upsertEntry({ ...state });
+        closeModal();
+      },
+    }),
+  ]);
+
+  openModal(el("div", {}, [
+    el(".modal-head", {}, [
+      el("h2", { text: isEdit ? "Eintrag bearbeiten" : "Neuer Eintrag" }),
+      el("button.close", { html: "&times;", onclick: closeModal }),
+    ]),
+    node,
+    foot,
+  ]));
+}
+
+
+exports.openEntryModal = openEntryModal;
+};
+__modules["src/views/calendar.js"] = function(require, module, exports){
+/* ===================================================================
+   Kalender-View: Tag / Woche / Monat / Jahr
+   =================================================================== */
+const { el, clear } = require("src/dom.js");
+const { getState, setNote } = require("src/store.js");
+const { WEEKDAYS_MON, MONTHS, MONTHS_SHORT, startOfWeek, addDays, addMonths, toDateKey, fromDateKey, isSameDay, fmtRange, fmtDayFull, weekKey, timeToMin, durationMin, fmtDuration, fmtHours, textOn, esc, minToTime } = require("src/utils.js");
+const { catalogById } = require("src/modules.js");
+const { openEntryModal } = require("src/entryModal.js");
+
+// View-Zustand (lokal zur Kalenderseite)
+const cal = {
+  view: "woche",          // tag | woche | monat | jahr
+  cursor: new Date(),     // Bezugsdatum
+};
+
+const DAY_START = 7;   // Stunden-Achse von 7 Uhr
+const DAY_END = 21;    // bis 21 Uhr
+const HOUR_PX = 48;
+
+function entryColor(entry) {
+  if (entry.color && entry.color !== "auto") return entry.color;
+  if (entry.moduleId) {
+    const u = getState().selectedModules[entry.moduleId];
+    if (u && u.color) return u.color;
+  }
+  return "#7c6ff0";
+}
+
+function entriesForDay(dateKey) {
+  return getState().entries
+    .filter((e) => e.date === dateKey)
+    .sort((a, b) => timeToMin(a.from) - timeToMin(b.from));
+}
+
+/* ---------- Woche / Tag Grid ---------- */
+function renderTimeGrid(days) {
+  const colCount = days.length;
+  const today = new Date();
+
+  // Kopf
+  const headCols = [el(".corner")];
+  days.forEach((d) => {
+    const isToday = isSameDay(d, today);
+    headCols.push(el(`.day-col${isToday ? ".today" : ""}`, {}, [
+      el("div.dlabel", { text: WEEKDAYS_MON[(d.getDay() + 6) % 7] }),
+      el("div.dnum", { text: d.getDate() }),
+    ]));
+  });
+  const head = el(".week-head", {
+    style: { gridTemplateColumns: `56px repeat(${colCount}, 1fr)` },
+  }, headCols);
+
+  // Körper
+  const timeCol = el(".time-col", {});
+  for (let h = DAY_START; h <= DAY_END; h++) {
+    timeCol.appendChild(el(".time-slot", { text: `${String(h).padStart(2, "0")}:00` }));
+  }
+
+  const dayCols = days.map((d) => {
+    const key = toDateKey(d);
+    const col = el(".day-column");
+    // Stunden-Zellen (Klick = neuer Eintrag zu dieser Zeit)
+    for (let h = DAY_START; h <= DAY_END; h++) {
+      col.appendChild(el(".hour-cell", {
+        onclick: () => openEntryModal(null, { date: key, from: `${String(h).padStart(2, "0")}:00`, to: `${String(h + 1).padStart(2, "0")}:00` }),
+      }));
+    }
+    // Events absolut positionieren
+    entriesForDay(key).forEach((e) => {
+      const startMin = timeToMin(e.from);
+      const dur = Math.max(30, durationMin(e.from, e.to));
+      const top = ((startMin - DAY_START * 60) / 60) * HOUR_PX;
+      const height = (dur / 60) * HOUR_PX - 2;
+      const bg = entryColor(e);
+      col.appendChild(el(`.event${e.kind === "termin" ? ".is-termin" : ""}`, {
+        style: { top: `${Math.max(0, top)}px`, height: `${height}px`, background: bg, color: textOn(bg) },
+        onclick: (ev) => { ev.stopPropagation(); openEntryModal(e); },
+        title: e.title,
+      }, [
+        el(".ev-title", { text: (e.priority === "dringend" ? "⚠ " : e.priority === "wichtig" ? "☆ " : "") + (e.title || "(ohne Titel)") }),
+        el(".ev-time", { text: `${e.from}–${e.to}` }),
+      ]));
+    });
+    return col;
+  });
+
+  const body = el(".week-body", {
+    style: { gridTemplateColumns: `56px repeat(${colCount}, 1fr)` },
+  }, [timeCol, ...dayCols]);
+
+  return el(".week-grid-wrap", {}, [head, el(".week-scroll", {}, [body])]);
+}
+
+/* ---------- Monat ---------- */
+function renderMonth() {
+  const cur = cal.cursor;
+  const first = new Date(cur.getFullYear(), cur.getMonth(), 1);
+  const gridStart = startOfWeek(first);
+  const today = new Date();
+
+  const weekdays = el(".month-weekdays", {}, WEEKDAYS_MON.map((w) => el("div", { text: w })));
+  const cells = [];
+  for (let i = 0; i < 42; i++) {
+    const d = addDays(gridStart, i);
+    const key = toDateKey(d);
+    const inMonth = d.getMonth() === cur.getMonth();
+    const isToday = isSameDay(d, today);
+    const dayEntries = entriesForDay(key);
+
+    const evNodes = dayEntries.slice(0, 3).map((e) => {
+      const bg = entryColor(e);
+      return el(".m-event", { style: { background: bg, color: textOn(bg) }, text: `${e.from} ${e.title || ""}`.trim(), onclick: (ev) => { ev.stopPropagation(); openEntryModal(e); } });
+    });
+    if (dayEntries.length > 3) evNodes.push(el(".m-more", { text: `+${dayEntries.length - 3} weitere` }));
+
+    cells.push(el(`.month-cell${inMonth ? "" : ".other"}${isToday ? ".today" : ""}`, {
+      onclick: () => { cal.cursor = d; cal.view = "tag"; render(host); },
+    }, [el("div.mnum", { text: d.getDate() }), ...evNodes]));
+  }
+  return el(".month-grid", {}, [weekdays, el(".month-cells", {}, cells)]);
+}
+
+/* ---------- Jahr ---------- */
+function renderYear() {
+  const year = cal.cursor.getFullYear();
+  const today = new Date();
+  const monthsNodes = [];
+  for (let m = 0; m < 12; m++) {
+    const first = new Date(year, m, 1);
+    const gridStart = startOfWeek(first);
+    const cells = WEEKDAYS_MON.map((w) => el("span.wd", { text: w[0] }));
+    for (let i = 0; i < 42; i++) {
+      const d = addDays(gridStart, i);
+      if (d.getMonth() !== m && i >= 35) break;
+      const inMonth = d.getMonth() === m;
+      if (!inMonth) { cells.push(el("span", { text: "" })); continue; }
+      const key = toDateKey(d);
+      const has = entriesForDay(key).length > 0;
+      const isToday = isSameDay(d, today);
+      cells.push(el(`span${isToday ? ".today" : has ? ".has" : ""}`, { text: d.getDate() }));
+    }
+    monthsNodes.push(el(".mini-month", {
+      onclick: () => { cal.cursor = new Date(year, m, 1); cal.view = "monat"; render(host); },
+    }, [el("h4", { text: MONTHS[m] }), el(".mini-grid", {}, cells)]));
+  }
+  return el(".year-grid", {}, monthsNodes);
+}
+
+/* ---------- Seitenleiste ---------- */
+function renderSidebar() {
+  const d = getState();
+  const wk = startOfWeek(cal.cursor);
+  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(wk, i));
+  const weekEntries = d.entries.filter((e) => weekDays.some((wd) => toDateKey(wd) === e.date));
+  const lernBlocks = weekEntries.filter((e) => e.kind === "lernblock");
+  const totalMin = lernBlocks.reduce((s, e) => s + (e.doneH || 0) * 60 + (e.doneM || 0), 0);
+  const withTime = lernBlocks.filter((e) => (e.doneH || 0) + (e.doneM || 0) > 0).length;
+
+  const wKey = weekKey(cal.cursor);
+  const weekNote = d.notes[`week-${wKey}`] || "";
+  const dayNoteKey = `day-${toDateKey(cal.cursor)}`;
+  const dayNote = d.notes[dayNoteKey] || "";
+
+  return el(".cal-side", {}, [
+    el(".card", {}, [
+      el(".card-sub", { text: "Deine Woche" }),
+      el("div", { style: { fontSize: "13px", color: "#6b7280", margin: "2px 0 6px" }, text: fmtRange(weekDays[0], weekDays[6]) }),
+      el(".big-h", { html: `${fmtHours(totalMin)} <span style="font-size:16px;color:#6b7280">h</span>` }),
+      el("div", { style: { fontSize: "12.5px", color: "#9aa0ac", marginBottom: "10px" }, text: "gelernt diese Woche" }),
+      el(".mini-stat", {}, [el("span", { text: "Lernblöcke mit Zeit" }), el("b", { text: String(withTime) })]),
+      el(".mini-stat", {}, [el("span", { text: "Einträge gesamt" }), el("b", { text: String(weekEntries.length) })]),
+      el("button.link-btn", { text: "Wochenrückblick →", style: { marginTop: "8px" }, onclick: () => window.__navigate("rueckblick") }),
+    ]),
+    noteCard("📝 Wochennotiz", "Gedanken, offene Fragen oder Dinge, die du mitnehmen möchtest.", weekNote, (v) => setNote(`week-${wKey}`, v)),
+    noteCard("📄 Tagesnotiz", fmtDayFull(cal.cursor), dayNote, (v) => setNote(dayNoteKey, v)),
+  ]);
+}
+
+function noteCard(title, sub, value, onSave) {
+  let editing = false;
+  const wrap = el(".card");
+  function paint() {
+    clear(wrap);
+    wrap.appendChild(el(".card-sub", { text: title, style: { fontWeight: "700", color: "#1f2430" } }));
+    wrap.appendChild(el("div", { style: { fontSize: "12.5px", color: "#9aa0ac", margin: "4px 0 8px" }, text: sub }));
+    if (editing) {
+      const ta = el("textarea.textarea", { style: { minHeight: "70px" } }, value);
+      wrap.appendChild(ta);
+      wrap.appendChild(el("div", { style: { display: "flex", gap: "8px", marginTop: "8px" } }, [
+        el("button.btn.btn-sm.btn-primary", { text: "Speichern", onclick: () => { value = ta.value; onSave(value); editing = false; paint(); } }),
+        el("button.btn.btn-sm", { text: "Abbrechen", onclick: () => { editing = false; paint(); } }),
+      ]));
+    } else {
+      if (value) wrap.appendChild(el("div", { style: { fontSize: "13.5px", whiteSpace: "pre-wrap", marginBottom: "6px" }, text: value }));
+      wrap.appendChild(el("button.link-btn", { text: value ? "Bearbeiten" : "Notiz schreiben", onclick: () => { editing = true; paint(); } }));
+    }
+  }
+  paint();
+  return wrap;
+}
+
+/* ---------- Toolbar ---------- */
+function renderToolbar() {
+  const label = (() => {
+    if (cal.view === "tag") return fmtDayFull(cal.cursor);
+    if (cal.view === "woche") { const s = startOfWeek(cal.cursor); return `${fmtRange(s, addDays(s, 6))} ${cal.cursor.getFullYear()}`; }
+    if (cal.view === "monat") return `${MONTHS[cal.cursor.getMonth()]} ${cal.cursor.getFullYear()}`;
+    return `${cal.cursor.getFullYear()}`;
+  })();
+
+  function step(dir) {
+    if (cal.view === "tag") cal.cursor = addDays(cal.cursor, dir);
+    else if (cal.view === "woche") cal.cursor = addDays(cal.cursor, dir * 7);
+    else if (cal.view === "monat") cal.cursor = addMonths(cal.cursor, dir);
+    else cal.cursor = addMonths(cal.cursor, dir * 12);
+    render(host);
+  }
+
+  const views = [["tag", "Tag"], ["woche", "Woche"], ["monat", "Monat"], ["jahr", "Jahr"]];
+  return el(".cal-toolbar", {}, [
+    el("button.btn.btn-sm", { text: "Heute", onclick: () => { cal.cursor = new Date(); render(host); } }),
+    el(".cal-nav", {}, [
+      el("button.btn.btn-sm.btn-icon", { html: "‹", onclick: () => step(-1) }),
+      el("button.btn.btn-sm.btn-icon", { html: "›", onclick: () => step(1) }),
+    ]),
+    el(".cal-range", { text: label }),
+    el(".view-switch", {}, views.map(([v, lbl]) =>
+      el(`button${cal.view === v ? ".sel" : ""}`, { text: lbl, onclick: () => { cal.view = v; render(host); } }))),
+  ]);
+}
+
+let host = null;
+
+function render(container) {
+  host = container;
+  clear(container);
+
+  container.appendChild(el(".main-eyebrow", { text: "Dein Lernalltag. In deinem Tempo." }));
+  const todayStr = `${new Date().getDate()}. ${MONTHS[new Date().getMonth()]}`;
+  container.appendChild(el(".page-head", {}, [
+    el("h1", { text: "Mein Kalender" }),
+    el(".date-badge", { html: `${esc(todayStr)} <span class="avatar">${esc(getState().settings.initials || "OM")}</span>` }),
+  ]));
+
+  container.appendChild(renderToolbar());
+
+  let main;
+  if (cal.view === "monat") main = renderMonth();
+  else if (cal.view === "jahr") main = renderYear();
+  else {
+    const days = cal.view === "tag" ? [cal.cursor] : Array.from({ length: 7 }, (_, i) => addDays(startOfWeek(cal.cursor), i));
+    main = renderTimeGrid(days);
+  }
+
+  if (cal.view === "jahr") {
+    container.appendChild(main);
+  } else {
+    container.appendChild(el(".cal-layout", {}, [main, renderSidebar()]));
+  }
+
+  if ((cal.view === "woche" || cal.view === "tag")) {
+    container.appendChild(el("div", {
+      style: { fontSize: "13px", color: "#9aa0ac", textAlign: "center", padding: "12px" },
+      text: "+ Klicke auf eine Uhrzeit, um deinen ersten Lernblock oder Termin einzutragen.",
+    }));
+  }
+}
+
+
+exports.render = render;
+};
+__modules["src/views/modules.js"] = function(require, module, exports){
+/* ===================================================================
+   Module & Projekte: durchsuchbarer Modulkatalog + Meine Module
+   =================================================================== */
+const { el, clear, openModal, closeModal } = require("src/dom.js");
+const { getState, toggleModule, updateModule, setDPathChoice } = require("src/store.js");
+const { EXAM_STATUS } = require("data/moduleCatalog.js");
+const { allModules, groups, pflichtBySemester, modulesInGroup, zusatzModules, catalogById, ectsSelectedInGroup, moduleProgressPct, countsTowardProgress, selectedModulesDetailed } = require("src/modules.js");
+const { esc, uid, fmtDE } = require("src/utils.js");
+
+const ui = { search: "", filter: "alle", tab: "katalog" };
+
+function statusMeta(id) { return EXAM_STATUS.find((s) => s.id === id) || EXAM_STATUS[0]; }
+
+function isSelected(id) { return !!getState().selectedModules[id]; }
+
+/* ---------- Modulzeile ---------- */
+function moduleRow(m, { showGroups = false } = {}) {
+  const d = getState();
+  const sel = isSelected(m.id);
+  const user = d.selectedModules[m.id];
+
+  // Pflicht-/Wahlpflicht-Checkbox-Logik
+  const canToggle = m.type !== "pflicht"; // Pflicht sind immer Teil des Plans, aber wählbar zum "Meine Module" hinzufügen
+  const row = el(`.mod-row${sel ? ".selected" : ""}`);
+
+  // Checkbox
+  const cb = el("input.mod-check", {
+    type: "checkbox",
+    checked: sel,
+    title: sel ? "Aus 'Meine Module' entfernen" : "Zu 'Meine Module' hinzufügen",
+    onchange: () => {
+      // D-Pfad-Exklusivität prüfen
+      if (!sel && m.groups && m.groups.includes("D")) {
+        handleDSelection(m);
+        return;
+      }
+      toggleModule({ ...m, _defaultColor: "#7c6ff0" });
+    },
+  });
+
+  // Metadaten
+  const metaBits = [];
+  metaBits.push(el("span.m-code", { text: m.id }));
+  metaBits.push(el("span", { text: `${m.ects} ECTS` }));
+  if (m.semester) metaBits.push(el("span", { text: `${m.semester}. Sem.` }));
+  if (m.examForm && m.examForm !== "—") metaBits.push(el("span", { text: m.examForm }));
+  if (m.subCourses) metaBits.push(el("span", { text: `Teilkurse: ${m.subCourses.join(", ")}` }));
+
+  // Badges
+  const badges = [];
+  if (m.type === "pflicht") badges.push(el("span.badge.badge-pflicht", { text: "Pflicht" }));
+  if (m.type === "wahlpflicht") badges.push(el("span.badge.badge-wp", { text: "Wahlpflicht" }));
+  if (m.type === "zusatz") badges.push(el("span.badge.badge-zusatz", { text: "Zusatz (0 ECTS)" }));
+  if (showGroups && m.groups && m.groups.length) {
+    m.groups.forEach((g) => badges.push(el("span.badge.badge-group", { text: `Gruppe ${g}` })));
+  }
+  if (m.possibleDuplicate) badges.push(el("span.badge.badge-dup", { text: "⚠ möglicher Doppeleintrag" }));
+  if (m.dPath === "praktikum") badges.push(el("span.badge", { text: "Praktikum-Weg (D)" }));
+  if (m.dPath === "module") badges.push(el("span.badge", { text: "Modul-Weg (D)" }));
+
+  const main = el(".mod-main", {}, [
+    el(".m-name", {}, [document.createTextNode(m.name + " "), ...badges]),
+    el(".m-meta", {}, metaBits),
+  ]);
+
+  const side = el(".mod-side");
+  if (sel) {
+    // Status-Dropdown + Fortschritt + Detail-Button
+    const pct = moduleProgressPct(user);
+    const statusSel = el("select.status-select", {
+      style: { color: statusMeta(user.status).color },
+      onchange: (e) => { updateModule(m.id, { status: e.target.value }); },
+    }, EXAM_STATUS.map((s) => el("option", { value: s.id, text: s.label, selected: user.status === s.id })));
+    side.appendChild(el("span", { style: { fontSize: "12px", color: "#6b7280", width: "34px", textAlign: "right" }, text: `${pct}%` }));
+    side.appendChild(statusSel);
+    side.appendChild(el("button.btn.btn-sm", { text: "Details", onclick: () => openModuleDetail(m.id) }));
+  } else {
+    side.appendChild(el("span", { style: { fontSize: "12.5px", color: "#9aa0ac" }, text: m.type === "zusatz" ? "optional" : "nicht gewählt" }));
+  }
+
+  row.appendChild(cb);
+  row.appendChild(main);
+  row.appendChild(side);
+  return row;
+}
+
+/* ---------- Wahlpflichtbereich D: Exklusive Wahl ---------- */
+function handleDSelection(m) {
+  const d = getState();
+  if (!d.dPathChoice) {
+    // Pfad festlegen anhand des gewählten Moduls
+    const path = m.dPath;
+    openModal(el("div", {}, [
+      el(".modal-head", {}, [el("h2", { text: "Wahlpflichtbereich D" }), el("button.close", { html: "&times;", onclick: closeModal })]),
+      el(".modal-body", {}, [
+        el("p", { text: path === "praktikum"
+          ? "Du wählst den Praktikumsweg (30 ECTS). Dann können die sechs Einzelmodule nicht zusätzlich gewählt werden."
+          : "Du wählst den Modul-Weg (sechs Module à 5 ECTS = 30 ECTS). Dann ist das Praktikum nicht zusätzlich wählbar." }),
+      ]),
+      el(".modal-foot", {}, [
+        el("button.btn", { text: "Abbrechen", onclick: closeModal }),
+        el("button.btn.btn-primary", { text: "Weg festlegen", onclick: () => { setDPathChoice(path); toggleModule({ ...m, _defaultColor: "#7c6ff0" }); closeModal(); } }),
+      ]),
+    ]), { size: "narrow" });
+  } else if (d.dPathChoice !== m.dPath) {
+    // falscher Pfad
+    openModal(el("div", {}, [
+      el(".modal-head", {}, [el("h2", { text: "Nicht möglich" }), el("button.close", { html: "&times;", onclick: closeModal })]),
+      el(".modal-body", {}, [el("p", { text: `Du hast bereits den ${d.dPathChoice === "praktikum" ? "Praktikumsweg" : "Modul-Weg"} für Wahlpflichtbereich D gewählt. Beide Wege gleichzeitig zählen nicht.` })]),
+      el(".modal-foot", {}, [
+        el("button.btn", { text: "OK", onclick: closeModal }),
+        el("button.btn.btn-primary", { text: "Weg wechseln", onclick: () => {
+          // alte D-Auswahl entfernen
+          Object.keys(getState().selectedModules).forEach((id) => {
+            const cm = catalogById(id);
+            if (cm.groups && cm.groups.includes("D")) toggleModule({ ...cm });
+          });
+          setDPathChoice(m.dPath);
+          toggleModule({ ...m, _defaultColor: "#7c6ff0" });
+          closeModal();
+        } }),
+      ]),
+    ]), { size: "narrow" });
+  } else {
+    toggleModule({ ...m, _defaultColor: "#7c6ff0" });
+  }
+}
+
+/* ---------- Gruppen-Header mit ECTS-Soll ---------- */
+function groupHeader(g) {
+  const sel = ectsSelectedInGroup(g.id);
+  const done = sel >= g.requiredEcts;
+  return el(".group-header", {}, [
+    el("h3", { text: `${g.label}${g.semester ? ` · ${g.semester}. Semester` : ""}` }),
+    el(".ects-goal", {}, [
+      el("span", { class: done ? "ok" : "pending", text: `${sel} / ${g.requiredEcts} ECTS` }),
+      el("span", { style: { color: "#9aa0ac", marginLeft: "8px", fontSize: "12px" }, text: g.note }),
+    ]),
+  ]);
+}
+
+/* ---------- Modul-Detail-Modal ---------- */
+function openModuleDetail(id) {
+  const m = catalogById(id);
+  const user = getState().selectedModules[id];
+  if (!user) return;
+
+  let node;
+  function rebuild() { const f = buildBody(); node.replaceWith(f); node = f; }
+
+  function buildBody() {
+    const pct = moduleProgressPct(user);
+    const statusSel = el("select.select", {
+      onchange: (e) => { updateModule(id, { status: e.target.value }); rebuild(); refresh(); },
+    }, EXAM_STATUS.map((s) => el("option", { value: s.id, text: s.label, selected: user.status === s.id })));
+
+    const tasksList = el("ul.step-list", {}, (user.tasks || []).map((t) =>
+      el("li", {}, [
+        el("input", { type: "checkbox", checked: t.done, onchange: (e) => {
+          t.done = e.target.checked; updateModule(id, { tasks: user.tasks }); rebuild(); refresh();
+        } }),
+        el("span", { class: t.done ? "done" : "", text: t.text }),
+        el("button.step-del", { html: "&times;", onclick: () => { user.tasks = user.tasks.filter((x) => x.id !== t.id); updateModule(id, { tasks: user.tasks }); rebuild(); refresh(); } }),
+      ])));
+    const newTask = el("input.input", { placeholder: "Neue Lernaufgabe / verbleibender Lernschritt …", onkeydown: (e) => {
+      if (e.key === "Enter" && e.target.value.trim()) {
+        user.tasks = user.tasks || [];
+        user.tasks.push({ id: uid(), text: e.target.value.trim(), done: false });
+        updateModule(id, { tasks: user.tasks }); e.target.value = ""; rebuild(); refresh();
+      }
+    } });
+
+    return el(".modal-body", {}, [
+      el(".mod-detail-grid", { style: { marginBottom: "16px" } }, [
+        el(".detail-stat", {}, [el(".l", { text: "Kurscode" }), el(".v", { style: { fontSize: "15px" }, text: m.id })]),
+        el(".detail-stat", {}, [el(".l", { text: "ECTS" }), el(".v", { text: `${m.ects}` })]),
+        el(".detail-stat", {}, [el(".l", { text: "Prüfungsform" }), el(".v", { style: { fontSize: "15px" }, text: m.examForm || "—" })]),
+        el(".detail-stat", {}, [el(".l", { text: "Fortschritt" }), el(".v", { text: `${pct} %` })]),
+      ]),
+      el(".progress", { style: { marginBottom: "18px" } }, [el("span", { style: { width: pct + "%" } })]),
+
+      el(".field", {}, [el("label", { text: "Prüfungsstatus" }), statusSel]),
+      el(".field-row", {}, [
+        el(".field", { style: { margin: 0 } }, [el("label", { text: "Geschätzter Aufwand (Std.)" }),
+          el("input.input", { type: "number", min: "0", value: user.estHours || 0, oninput: (e) => updateModule(id, { estHours: +e.target.value || 0 }) })]),
+        el(".field", { style: { margin: 0 } }, [el("label", { text: "Zieltermin" }),
+          el("input.input", { type: "date", value: user.targetDate || "", onchange: (e) => updateModule(id, { targetDate: e.target.value }) })]),
+      ]),
+      el(".field-row", {}, [
+        el(".field", { style: { margin: 0 } }, [el("label", { text: "Seiten gelesen" }),
+          el("input.input", { type: "number", min: "0", value: user.pages?.done || 0, oninput: (e) => { user.pages = { ...(user.pages || {}), done: +e.target.value || 0 }; updateModule(id, { pages: user.pages }); rebuild(); refresh(); } })]),
+        el(".field", { style: { margin: 0 } }, [el("label", { text: "Seiten gesamt" }),
+          el("input.input", { type: "number", min: "0", value: user.pages?.total || 0, oninput: (e) => { user.pages = { ...(user.pages || {}), total: +e.target.value || 0 }; updateModule(id, { pages: user.pages }); rebuild(); refresh(); } })]),
+      ]),
+
+      el(".field", {}, [el("label", { text: "Verbleibende Lernschritte / Aufgaben" }), tasksList, newTask]),
+      el(".field", {}, [el("label", { text: "Notizen" }),
+        el("textarea.textarea", { oninput: (e) => updateModule(id, { notes: e.target.value }) }, user.notes || "")]),
+
+      el(".field", {}, [el("label", { text: "Modulfarbe (für Kalender)" }),
+        el(".color-row", {}, ["#7c6ff0","#e0ab2a","#37a874","#d85757","#2f80d6","#c457b9","#e08a3c","#3ca896"].map((c) =>
+          el(`.swatch${user.color === c ? ".sel" : ""}`, { style: { background: c }, onclick: () => { updateModule(id, { color: c }); rebuild(); refresh(); } })))]),
+    ]);
+  }
+
+  node = buildBody();
+  openModal(el("div", {}, [
+    el(".modal-head", {}, [el("h2", { text: m.name }), el("button.close", { html: "&times;", onclick: closeModal })]),
+    node,
+    el(".modal-foot", {}, [el("button.btn.btn-primary", { text: "Fertig", onclick: closeModal })]),
+  ]), { size: "wide" });
+}
+
+/* ---------- Haupt-Render ---------- */
+let host = null;
+function refresh() { if (host) render(host); }
+
+function render(container) {
+  host = container;
+  clear(container);
+  const d = getState();
+
+  container.appendChild(el(".main-eyebrow", { text: "Dein Studienplan. In deiner Struktur." }));
+  container.appendChild(el(".page-head", {}, [
+    el("h1", { text: "Module & Projekte" }),
+    el(".date-badge", { html: `<span class="avatar">${esc(d.settings.initials || "OM")}</span>` }),
+  ]));
+  container.appendChild(el(".page-sub", { text: "Ordne Lernblöcke zu. Pflichtmodule sind vorgegeben, Wahlpflichtmodule wählst du per Checkbox. Nur gewählte Wahlmöglichkeiten zählen zum Studienfortschritt." }));
+
+  // Tabs
+  const selCount = Object.keys(d.selectedModules).length;
+  container.appendChild(el(".filter-chips", { style: { marginBottom: "14px" } }, [
+    el(`button.chip${ui.tab === "katalog" ? ".sel" : ""}`, { text: "📚 Modulkatalog", onclick: () => { ui.tab = "katalog"; refresh(); } }),
+    el(`button.chip${ui.tab === "meine" ? ".sel" : ""}`, { text: `⭐ Meine Module (${selCount})`, onclick: () => { ui.tab = "meine"; refresh(); } }),
+  ]));
+
+  if (ui.tab === "meine") return renderMyModules(container);
+  renderCatalog(container);
+}
+
+/* ---------- Katalog ---------- */
+function renderCatalog(container) {
+  // Suche + Filter
+  const searchBox = el(".search-box", {}, [
+    el("span.s-ico", { text: "🔍" }),
+    el("input", { placeholder: "Module durchsuchen (Name oder Kurscode) …", value: ui.search, oninput: (e) => { ui.search = e.target.value; renderList(); } }),
+  ]);
+  const filters = [["alle", "Alle"], ["pflicht", "Pflicht"], ["wahlpflicht", "Wahlpflicht"], ["gewaehlt", "Gewählt"], ["zusatz", "Zusatz"]];
+  const chips = el(".filter-chips", {}, filters.map(([v, l]) =>
+    el(`button.chip${ui.filter === v ? ".sel" : ""}`, { text: l, onclick: () => { ui.filter = v; renderList(); } })));
+  container.appendChild(el(".mod-toolbar", {}, [searchBox, chips]));
+
+  const listHost = el("div");
+  container.appendChild(listHost);
+
+  function matches(m) {
+    const q = ui.search.trim().toLowerCase();
+    if (q && !(m.name.toLowerCase().includes(q) || m.id.toLowerCase().includes(q))) return false;
+    if (ui.filter === "pflicht") return m.type === "pflicht";
+    if (ui.filter === "wahlpflicht") return m.type === "wahlpflicht";
+    if (ui.filter === "zusatz") return m.type === "zusatz";
+    if (ui.filter === "gewaehlt") return isSelected(m.id);
+    return true;
+  }
+
+  function renderList() {
+    // Re-sync chips/search highlight
+    chips.querySelectorAll(".chip").forEach((c, i) => c.classList.toggle("sel", filters[i][0] === ui.filter));
+    clear(listHost);
+
+    const q = ui.search.trim();
+    const anyFilter = ui.filter !== "alle" || q;
+
+    // Pflicht nach Semester
+    const pf = pflichtBySemester();
+    let shownAny = false;
+    Object.keys(pf).sort().forEach((sem) => {
+      const list = pf[sem].filter(matches);
+      if (!list.length) return;
+      shownAny = true;
+      listHost.appendChild(el(".group-header", {}, [el("h3", { text: `${sem}. Semester · Pflicht` }), el(".ects-goal.pending", { text: `${list.reduce((s, m) => s + m.ects, 0)} ECTS` })]));
+      list.forEach((m) => listHost.appendChild(moduleRow(m)));
+    });
+
+    // Wahlpflichtgruppen
+    const gs = groups();
+    Object.values(gs).forEach((g) => {
+      const list = modulesInGroup(g.id).filter(matches);
+      if (!list.length) return;
+      shownAny = true;
+      listHost.appendChild(groupHeader(g));
+      // Dubletten innerhalb der Gruppe vermeiden (ein Katalogeintrag, aber Gruppenzugehörigkeit zeigen)
+      const seen = new Set();
+      list.forEach((m) => { if (seen.has(m.id)) return; seen.add(m.id); listHost.appendChild(moduleRow(m, { showGroups: true })); });
+    });
+
+    // Zusatz
+    const zus = zusatzModules().filter(matches);
+    if (zus.length) {
+      shownAny = true;
+      listHost.appendChild(el(".group-header", {}, [el("h3", { text: "Zusätzliche Angebote" }), el(".ects-goal.pending", { text: "ohne ECTS für den Bachelor" })]));
+      zus.forEach((m) => listHost.appendChild(moduleRow(m)));
+    }
+
+    if (!shownAny) listHost.appendChild(el(".empty-mini", { text: "Keine Module gefunden. Suchbegriff oder Filter anpassen." }));
+  }
+
+  renderList();
+}
+
+/* ---------- Meine Module ---------- */
+function renderMyModules(container) {
+  const mods = selectedModulesDetailed();
+  if (!mods.length) {
+    container.appendChild(el(".card", {}, [el(".empty-state", {}, [
+      el(".big-ico", { text: "📖" }),
+      el("h2", { text: "Noch keine Module gewählt." }),
+      el("p", { text: "Wechsle zum Modulkatalog und hake die Module an, die du bearbeiten möchtest. Sie erscheinen dann hier und lassen sich Lernblöcken im Kalender zuordnen." }),
+      el("button.btn.btn-primary", { text: "Zum Modulkatalog", onclick: () => { ui.tab = "katalog"; refresh(); } }),
+    ])]));
+    return;
+  }
+
+  // nach Semester / Gruppe gruppieren
+  mods.sort((a, b) => (a.semester || 99) - (b.semester || 99) || a.name.localeCompare(b.name));
+  mods.forEach((m) => container.appendChild(moduleRow(m, { showGroups: true })));
+}
+
+
+exports.render = render;
+};
+__modules["src/views/review.js"] = function(require, module, exports){
+/* ===================================================================
+   Wochen-/Monatsrückblick: Soll vs. Ist, Lernzeit je Modul,
+   offene Punkte übertragen, Notizen
+   =================================================================== */
+const { el, clear } = require("src/dom.js");
+const { getState, setNote, setWeekGoal, setMonthGoal, upsertEntry } = require("src/store.js");
+const { startOfWeek, endOfWeek, addDays, addMonths, toDateKey, fromDateKey, weekKey, monthKey, fmtRange, MONTHS, fmtHours, fmtDuration, textOn, esc } = require("src/utils.js");
+const { catalogById } = require("src/modules.js");
+
+const rv = { period: "woche", cursor: new Date() };
+let host = null;
+
+function periodRange() {
+  if (rv.period === "woche") {
+    const s = startOfWeek(rv.cursor);
+    return { start: s, end: addDays(s, 6) };
+  }
+  const s = new Date(rv.cursor.getFullYear(), rv.cursor.getMonth(), 1);
+  const e = new Date(rv.cursor.getFullYear(), rv.cursor.getMonth() + 1, 0);
+  return { start: s, end: e };
+}
+
+function entriesInRange() {
+  const { start, end } = periodRange();
+  const sk = toDateKey(start), ek = toDateKey(end);
+  return getState().entries.filter((e) => e.date >= sk && e.date <= ek);
+}
+
+function doneMin(e) { return (e.doneH || 0) * 60 + (e.doneM || 0); }
+function plannedMin(e) {
+  const [fh, fm] = (e.from || "0:0").split(":").map(Number);
+  const [th, tm] = (e.to || "0:0").split(":").map(Number);
+  const d = (th * 60 + tm) - (fh * 60 + fm);
+  return d > 0 ? d : 0;
+}
+
+function render(container) {
+  host = container;
+  clear(container);
+  const d = getState();
+
+  container.appendChild(el(".main-eyebrow", { text: "Dein Rückblick. Soll gegen Ist." }));
+  container.appendChild(el(".page-head", {}, [
+    el("h1", { text: rv.period === "woche" ? "Wochenrückblick" : "Monatsrückblick" }),
+    el(".date-badge", { html: `<span class="avatar">${esc(d.settings.initials || "OM")}</span>` }),
+  ]));
+
+  // Perioden-Umschalter + Navigation
+  const { start, end } = periodRange();
+  const label = rv.period === "woche"
+    ? `${fmtRange(start, end)} ${start.getFullYear()}`
+    : `${MONTHS[rv.cursor.getMonth()]} ${rv.cursor.getFullYear()}`;
+
+  container.appendChild(el(".cal-toolbar", {}, [
+    el(".review-period-switch", {}, [
+      el(`button${rv.period === "woche" ? ".sel" : ""}`, { text: "Woche", onclick: () => { rv.period = "woche"; render(host); } }),
+      el(`button${rv.period === "monat" ? ".sel" : ""}`, { text: "Monat", onclick: () => { rv.period = "monat"; render(host); } }),
+    ]),
+    el(".cal-nav", {}, [
+      el("button.btn.btn-sm.btn-icon", { html: "‹", onclick: () => { rv.cursor = rv.period === "woche" ? addDays(rv.cursor, -7) : addMonths(rv.cursor, -1); render(host); } }),
+      el("button.btn.btn-sm.btn-icon", { html: "›", onclick: () => { rv.cursor = rv.period === "woche" ? addDays(rv.cursor, 7) : addMonths(rv.cursor, 1); render(host); } }),
+    ]),
+    el(".cal-range", { text: label }),
+    el("button.btn.btn-sm", { text: "Heute", style: { marginLeft: "auto" }, onclick: () => { rv.cursor = new Date(); render(host); } }),
+  ]));
+
+  const entries = entriesInRange();
+  const lern = entries.filter((e) => e.kind === "lernblock");
+  const totalDone = lern.reduce((s, e) => s + doneMin(e), 0);
+  const totalPlanned = lern.reduce((s, e) => s + plannedMin(e), 0);
+  const withTime = lern.filter((e) => doneMin(e) > 0);
+  const avg = withTime.length ? Math.round(totalDone / withTime.length) : 0;
+
+  // Soll-Pensum
+  const pKey = rv.period === "woche" ? weekKey(rv.cursor) : monthKey(rv.cursor);
+  const goalStore = rv.period === "woche" ? d.weekGoals : d.monthGoals;
+  const sollH = goalStore[pKey] ?? (rv.period === "woche" ? d.settings.weeklyGoalHours : d.settings.weeklyGoalHours * 4);
+
+  // Stat-Karten
+  container.appendChild(el(".stat-grid", {}, [
+    statCard("Gelernt (Ist)", `${fmtHours(totalDone)}`, "h"),
+    statCard("Soll-Pensum", `${sollH}`, "h"),
+    statCard("Lernblöcke mit Zeit", `${withTime.length}`, ""),
+  ]));
+
+  // Soll/Ist-Balken
+  const istH = totalDone / 60;
+  const pct = sollH > 0 ? Math.min(100, Math.round((istH / sollH) * 100)) : 0;
+  container.appendChild(el(".card", { style: { marginBottom: "16px" } }, [
+    el(".card-title", { text: "Soll vs. Ist" }),
+    el(".card-sub", { text: `Du hast ${fmtHours(totalDone)} h von ${sollH} h erreicht (${pct} %). Geplant waren ${fmtHours(totalPlanned)} h in Lernblöcken.` }),
+    el(".progress", { style: { marginTop: "12px" } }, [el("span", { style: { width: pct + "%", background: pct >= 100 ? "#16a34a" : undefined } })]),
+    el("div", { style: { marginTop: "12px", display: "flex", gap: "10px", alignItems: "center" } }, [
+      el("span", { style: { fontSize: "13px" }, text: "Soll-Pensum anpassen:" }),
+      el("input.input", { type: "number", min: "0", value: sollH, style: { width: "90px" }, onchange: (e) => {
+        const v = +e.target.value || 0;
+        if (rv.period === "woche") setWeekGoal(pKey, v); else setMonthGoal(pKey, v);
+        render(host);
+      } }),
+      el("span", { style: { fontSize: "13px", color: "#6b7280" }, text: "Std." }),
+    ]),
+  ]));
+
+  // Lernzeit je Modul + Offene Punkte
+  container.appendChild(el(".grid-2", { style: { marginBottom: "16px" } }, [
+    renderModuleTime(lern),
+    renderOpenPoints(lern),
+  ]));
+
+  // Notiz + Einträge
+  const noteKey = rv.period === "woche" ? `week-${pKey}` : `month-${pKey}`;
+  container.appendChild(el(".grid-2", {}, [
+    renderNote(noteKey, d.notes[noteKey] || ""),
+    renderEntries(entries),
+  ]));
+
+  // Durchschnitt-Hinweis
+  if (withTime.length) {
+    container.appendChild(el("div", { style: { fontSize: "13px", color: "#9aa0ac", marginTop: "12px" }, text: `Ø pro Lernblock mit Zeit: ${fmtDuration(avg)}.` }));
+  }
+}
+
+function statCard(label, value, unit) {
+  return el(".stat-card", {}, [
+    el(".label", { text: label }),
+    el(".value", { html: `${esc(value)} ${unit ? `<small>${esc(unit)}</small>` : ""}` }),
+  ]);
+}
+
+function renderModuleTime(lern) {
+  const map = {}; // moduleId -> min
+  lern.forEach((e) => {
+    const key = e.moduleId || "__none";
+    map[key] = (map[key] || 0) + doneMin(e);
+  });
+  const entries = Object.entries(map).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+  const max = Math.max(1, ...entries.map(([, v]) => v));
+
+  const card = el(".card", {}, [el(".card-title", { text: "Lernzeit nach Modul" })]);
+  if (!entries.length) {
+    card.appendChild(el(".card-sub", { text: "Noch keine gelernte Zeit in diesem Zeitraum eingetragen. Trage im Kalender bei einem Lernblock die tatsächlich gelernte Zeit ein." }));
+    return card;
+  }
+  entries.forEach(([id, min]) => {
+    const m = id === "__none" ? { name: "Ohne Modul" } : catalogById(id);
+    const color = id === "__none" ? "#9aa0ac" : (getState().selectedModules[id]?.color || "#7c6ff0");
+    card.appendChild(el(".module-time-bar", {}, [
+      el(".dot", { style: { background: color } }),
+      el(".mtb-name", { text: m.name || id, title: m.name }),
+      el(".mtb-track", {}, [el("span", { style: { width: (min / max) * 100 + "%", background: color } })]),
+      el(".mtb-val", { text: fmtHours(min) + " h" }),
+    ]));
+  });
+  return card;
+}
+
+function renderOpenPoints(lern) {
+  const open = lern.filter((e) => (e.openPoints && e.openPoints.trim()) || e.carryOver);
+  const card = el(".card", {}, [
+    el(".card-title", { text: "Offen & mitnehmen" }),
+    el(".card-sub", { text: "Offene Punkte aus Lernblöcken. Übertrage sie in die nächste Woche." }),
+  ]);
+  if (!open.length) {
+    card.appendChild(el(".empty-mini", { text: "Hier ist gerade nichts offen. 🎉" }));
+    return card;
+  }
+  open.forEach((e) => {
+    const m = e.moduleId ? catalogById(e.moduleId) : null;
+    card.appendChild(el(".open-item", {}, [
+      el("div", {}, [
+        el("div", { text: e.openPoints || "(zum Mitnehmen markiert)" }),
+        el(".oi-ctx", { text: `${e.title || "Lernblock"}${m ? " · " + m.name : ""} · ${e.date}` }),
+      ]),
+      el("button.btn.btn-sm", { text: "→ nächste Woche", onclick: () => carryToNextWeek(e) }),
+    ]));
+  });
+  return card;
+}
+
+function carryToNextWeek(e) {
+  // kopiere offenen Punkt als neuen Lernblock 7 Tage später
+  const d = fromDateKey(e.date);
+  const next = addDays(d, 7);
+  upsertEntry({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+    kind: "lernblock",
+    title: `↪ ${e.title || "Mitgenommen"}`,
+    moduleId: e.moduleId || "",
+    date: toDateKey(next),
+    color: e.color || "auto",
+    from: e.from || "10:00",
+    to: e.to || "11:00",
+    priority: "wichtig",
+    learnType: e.learnType || "Wiederholen",
+    note: e.openPoints ? `Übertragen: ${e.openPoints}` : "",
+    doneH: 0, doneM: 0,
+    openPoints: "",
+    carryOver: false,
+  });
+  // Ursprung entmarkieren
+  upsertEntry({ ...e, carryOver: false, openPoints: "" });
+  render(host);
+}
+
+function renderNote(key, value) {
+  const card = el(".card", {}, [
+    el(".card-title", { text: rv.period === "woche" ? "Wochennotiz" : "Monatsnotiz" }),
+    el(".card-sub", { text: "Gedanken, offene Fragen oder Dinge, die du mitnehmen möchtest." }),
+  ]);
+  const ta = el("textarea.textarea", { style: { marginTop: "10px", minHeight: "90px" }, placeholder: "Notiz schreiben …", onchange: (e) => setNote(key, e.target.value) }, value);
+  card.appendChild(ta);
+  return card;
+}
+
+function renderEntries(entries) {
+  const card = el(".card", {}, [el(".card-title", { text: "Einträge in diesem Zeitraum" })]);
+  if (!entries.length) {
+    card.appendChild(el(".card-sub", { text: "Noch keine Einträge. Lege im Kalender deinen ersten Lernblock an." }));
+    return card;
+  }
+  entries.sort((a, b) => (a.date + a.from).localeCompare(b.date + b.from));
+  entries.forEach((e) => {
+    const m = e.moduleId ? catalogById(e.moduleId) : null;
+    const color = e.color && e.color !== "auto" ? e.color : (m && getState().selectedModules[e.moduleId]?.color) || (e.kind === "termin" ? "#2f80d6" : "#7c6ff0");
+    const dm = doneMin(e);
+    card.appendChild(el(".entry-row", {}, [
+      el(".e-bar", { style: { background: color } }),
+      el(".e-main", {}, [
+        el(".e-title", { text: (e.kind === "termin" ? "📅 " : "") + (e.title || "(ohne Titel)") }),
+        el(".e-meta", { text: `${e.date} · ${e.from}–${e.to}${m ? " · " + m.name : ""}${e.kind === "lernblock" && e.learnType ? " · " + e.learnType : ""}` }),
+      ]),
+      el(".e-time", { text: e.kind === "lernblock" ? (dm ? fmtDuration(dm) + " gelernt" : "–") : "Termin" }),
+    ]));
+  });
+  return card;
+}
+
+
+exports.render = render;
+};
+__modules["src/views/settings.js"] = function(require, module, exports){
+/* ===================================================================
+   Alltag & Einstellungen: Arbeitszeit, Fitness, Ruhetag, Zieltermin
+   + Vorschläge für freie Lernzeiten (belegt Ruhezeiten NICHT automatisch)
+   =================================================================== */
+const { el, clear, toast } = require("src/dom.js");
+const { getState, setSettings } = require("src/store.js");
+const { WEEKDAYS_LONG, WEEKDAYS_SHORT, timeToMin, minToTime, fmtDuration, fmtDE, startOfWeek, addDays, toDateKey, esc } = require("src/utils.js");
+const { openEntryModal } = require("src/entryModal.js");
+
+// Wochentage montagsbasiert für Toggles: index -> JS-getDay()
+const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0]; // Mo..So
+
+let host = null;
+
+function render(container) {
+  host = container;
+  clear(container);
+  const s = getState().settings;
+
+  container.appendChild(el(".main-eyebrow", { text: "Dein Alltag. Deine Lernfenster." }));
+  container.appendChild(el(".page-head", {}, [
+    el("h1", { text: "Alltag & Lernfenster" }),
+    el(".date-badge", { html: `<span class="avatar">${esc(s.initials || "OM")}</span>` }),
+  ]));
+  container.appendChild(el(".page-sub", { text: "Hinterlege deinen Rhythmus. StudyFlow schlägt daraus freie Lernzeiten vor – Ruhezeiten werden nie automatisch belegt." }));
+
+  // Studienzieltermin
+  container.appendChild(el(".card", { style: { marginBottom: "16px" } }, [
+    el(".card-title", { text: "🎯 Studienzieltermin" }),
+    el(".card-sub", { text: "Dein angepeiltes Abschlussdatum (z. B. im August)." }),
+    el("div", { style: { marginTop: "12px", display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" } }, [
+      el("input.input", { type: "date", value: s.targetDate || "", style: { maxWidth: "200px" }, onchange: (e) => { setSettings({ targetDate: e.target.value }); render(host); } }),
+      countdownBadge(s.targetDate),
+    ]),
+  ]));
+
+  // Arbeitszeit
+  container.appendChild(el(".card", { style: { marginBottom: "16px" } }, [
+    el(".card-title", { text: "💼 Arbeitszeit" }),
+    el(".card-sub", { text: "An diesen Tagen bist du berufstätig und nicht zum Lernen verfügbar." }),
+    dayToggles(s.work.days, (days) => setSettings({ work: { ...s.work, days } })),
+    timeRange("Von", "Bis", s.work.from, s.work.to, (from, to) => setSettings({ work: { ...s.work, from, to } })),
+  ]));
+
+  // Lernfreie Tage
+  container.appendChild(el(".card", { style: { marginBottom: "16px" } }, [
+    el(".card-title", { text: "📚 Lernfreie Tage (gut zum Lernen)" }),
+    el(".card-sub", { text: "Tage ohne Arbeit, die sich besonders zum Lernen eignen." }),
+    dayToggles(s.freeLearnDays, (days) => setSettings({ freeLearnDays: days })),
+  ]));
+
+  // Fitnessstudio
+  container.appendChild(el(".card", { style: { marginBottom: "16px" } }, [
+    el(".card-title", { text: "🏋️ Fitnessstudio" }),
+    el(".card-sub", { text: "Feste Zeiten, die als belegt gelten (werden nicht zum Lernen vorgeschlagen)." }),
+    dayToggles(s.gym.days, (days) => setSettings({ gym: { ...s.gym, days } })),
+    el("div", { style: { marginTop: "10px", display: "flex", gap: "16px", flexWrap: "wrap", alignItems: "center" } }, [
+      el("div", {}, [el("label", { style: { fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "4px" }, text: "Bevorzugte Uhrzeit" }),
+        el("input.input", { type: "time", value: s.gym.preferredTime, style: { width: "130px" }, onchange: (e) => setSettings({ gym: { ...s.gym, preferredTime: e.target.value } }) })]),
+      el("div", {}, [el("label", { style: { fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "4px" }, text: "Dauer (Min.)" }),
+        el("input.input", { type: "number", min: "30", step: "15", value: s.gym.durationMin, style: { width: "100px" }, onchange: (e) => setSettings({ gym: { ...s.gym, durationMin: +e.target.value || 75 } }) })]),
+    ]),
+  ]));
+
+  // Ruhetag + Tagesfenster + Wochenziel
+  container.appendChild(el(".card", { style: { marginBottom: "16px" } }, [
+    el(".card-title", { text: "😌 Ruhe & Rhythmus" }),
+    el("div", { style: { marginTop: "10px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" } }, [
+      el("div", {}, [el("label", { style: { fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "4px" }, text: "Ruhetag am Wochenende" }),
+        el("select.select", { onchange: (e) => setSettings({ restDay: +e.target.value }) },
+          [[6, "Samstag"], [0, "Sonntag"]].map(([v, l]) => el("option", { value: v, text: l, selected: s.restDay === v })))]),
+      el("div", {}, [el("label", { style: { fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "4px" }, text: "Wochen-Soll (Std.)" }),
+        el("input.input", { type: "number", min: "0", value: s.weeklyGoalHours, onchange: (e) => setSettings({ weeklyGoalHours: +e.target.value || 0 }) })]),
+    ]),
+    el("div", { style: { marginTop: "14px" } }, [
+      el("label", { style: { fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "4px" }, text: "Tagesfenster für Lernvorschläge" }),
+      el(".time-inline", {}, [
+        el("input.input", { type: "time", value: s.wakeFrom, style: { width: "120px" }, onchange: (e) => setSettings({ wakeFrom: e.target.value }) }),
+        el("span", { text: "–" }),
+        el("input.input", { type: "time", value: s.wakeTo, style: { width: "120px" }, onchange: (e) => setSettings({ wakeTo: e.target.value }) }),
+      ]),
+    ]),
+  ]));
+
+  // Namens-Einstellung
+  container.appendChild(el(".card", { style: { marginBottom: "16px" } }, [
+    el(".card-title", { text: "👤 Profil" }),
+    el("div", { style: { marginTop: "10px", display: "grid", gridTemplateColumns: "1fr 120px", gap: "14px" } }, [
+      el("div", {}, [el("label", { style: { fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "4px" }, text: "Anzeigename" }),
+        el("input.input", { value: s.studentName, onchange: (e) => setSettings({ studentName: e.target.value }) })]),
+      el("div", {}, [el("label", { style: { fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "4px" }, text: "Initialen" }),
+        el("input.input", { value: s.initials, maxlength: "3", onchange: (e) => { setSettings({ initials: e.target.value.toUpperCase() }); render(host); } })]),
+    ]),
+  ]));
+
+  // Vorschläge für freie Lernzeiten
+  container.appendChild(renderSuggestions());
+}
+
+function countdownBadge(targetDate) {
+  if (!targetDate) return el("span");
+  const diff = Math.ceil((new Date(targetDate) - new Date()) / 86400000);
+  if (diff < 0) return el("span.badge", { text: "Zieltermin erreicht 🎓" });
+  const weeks = Math.floor(diff / 7);
+  return el("span.badge.badge-group", { text: `noch ${diff} Tage (≈ ${weeks} Wochen) bis ${fmtDE(targetDate)}` });
+}
+
+function dayToggles(selected, onChange) {
+  const wrap = el(".day-toggles", { style: { marginTop: "10px" } });
+  DAY_ORDER.forEach((jsDay) => {
+    const on = selected.includes(jsDay);
+    wrap.appendChild(el(`.day-toggle${on ? ".on" : ""}`, {
+      text: WEEKDAYS_SHORT[jsDay],
+      onclick: () => {
+        const next = on ? selected.filter((x) => x !== jsDay) : [...selected, jsDay];
+        onChange(next); render(host);
+      },
+    }));
+  });
+  return wrap;
+}
+
+function timeRange(l1, l2, from, to, onChange) {
+  return el("div", { style: { marginTop: "12px", display: "flex", gap: "16px", alignItems: "center" } }, [
+    el("div", {}, [el("label", { style: { fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "4px" }, text: l1 }),
+      el("input.input", { type: "time", value: from, style: { width: "130px" }, onchange: (e) => onChange(e.target.value, to) })]),
+    el("div", {}, [el("label", { style: { fontSize: "13px", fontWeight: "600", display: "block", marginBottom: "4px" }, text: l2 }),
+      el("input.input", { type: "time", value: to, style: { width: "130px" }, onchange: (e) => onChange(from, e.target.value) })]),
+  ]);
+}
+
+/* ---------- Freie Lernzeiten vorschlagen ---------- */
+/**
+ * Logik:
+ *  - Betrachte die aktuelle Woche (Mo–So).
+ *  - Pro Tag: verfügbares Fenster = [wakeFrom, wakeTo].
+ *  - Blockiere: Arbeitszeit (an Arbeitstagen), Fitness (Dauer rund um preferredTime),
+ *    bereits eingetragene Einträge, sowie den Ruhetag komplett.
+ *  - Übrige zusammenhängende Lücken ab 45 min werden als Lernvorschlag gezeigt.
+ *  - Ruhezeiten (Ruhetag) werden NIE vorgeschlagen -> nicht automatisch belegt.
+ */
+function computeSuggestions() {
+  const s = getState().settings;
+  const entries = getState().entries;
+  const weekStart = startOfWeek(new Date());
+  const result = [];
+
+  for (let i = 0; i < 7; i++) {
+    const date = addDays(weekStart, i);
+    const jsDay = date.getDay();
+    const key = toDateKey(date);
+
+    // Ruhetag -> keine Vorschläge
+    if (jsDay === s.restDay) continue;
+
+    // Verfügbares Fenster
+    let windowStart = timeToMin(s.wakeFrom);
+    let windowEnd = timeToMin(s.wakeTo);
+
+    // Belegte Intervalle sammeln
+    const busy = [];
+    if (s.work.days.includes(jsDay)) busy.push([timeToMin(s.work.from), timeToMin(s.work.to)]);
+    if (s.gym.days.includes(jsDay)) {
+      const gStart = timeToMin(s.gym.preferredTime);
+      busy.push([gStart, gStart + s.gym.durationMin]);
+    }
+    entries.filter((e) => e.date === key).forEach((e) => busy.push([timeToMin(e.from), timeToMin(e.to)]));
+
+    // Lücken berechnen
+    busy.sort((a, b) => a[0] - b[0]);
+    let cursor = windowStart;
+    const gaps = [];
+    for (const [bs, be] of busy) {
+      if (bs > cursor) gaps.push([cursor, Math.min(bs, windowEnd)]);
+      cursor = Math.max(cursor, be);
+      if (cursor >= windowEnd) break;
+    }
+    if (cursor < windowEnd) gaps.push([cursor, windowEnd]);
+
+    gaps.filter(([a, b]) => b - a >= 45).forEach(([a, b]) => {
+      // auf max 3 h pro Vorschlagsblock begrenzen
+      const end = Math.min(b, a + 180);
+      result.push({ date, key, from: minToTime(a), to: minToTime(end), min: end - a });
+    });
+  }
+  return result;
+}
+
+function renderSuggestions() {
+  const sugg = computeSuggestions();
+  const card = el(".card", {}, [
+    el(".card-title", { text: "✨ Vorgeschlagene freie Lernzeiten (diese Woche)" }),
+    el(".card-sub", { text: "Basierend auf deinem Alltag. Vorschläge belegen nichts automatisch – du entscheidest per Klick, ob daraus ein Lernblock wird." }),
+  ]);
+  if (!sugg.length) {
+    card.appendChild(el(".empty-mini", { text: "Aktuell keine freien Lernfenster gefunden. Passe deine Zeiten oben an." }));
+    return card;
+  }
+  const list = el("div", { style: { marginTop: "12px" } });
+  sugg.slice(0, 14).forEach((sg) => {
+    list.appendChild(el(".suggestion-slot", {}, [
+      el(".ss-day", { text: `${WEEKDAYS_SHORT[sg.date.getDay()]} ${sg.date.getDate()}.` }),
+      el(".ss-time", { text: `${sg.from}–${sg.to}` }),
+      el("span", { style: { fontSize: "12.5px", color: "#9aa0ac" }, text: fmtDuration(sg.min) }),
+      el("button.btn.btn-sm.btn-primary", { text: "+ Lernblock", onclick: () => openEntryModal(null, { date: sg.key, from: sg.from, to: sg.to }) }),
+    ]));
+  });
+  card.appendChild(list);
+  return card;
+}
+
+
+exports.render = render;
+};
+__modules["src/app.js"] = function(require, module, exports){
+/* ===================================================================
+   App-Shell: Sidebar, Navigation, Routing, Export/Import
+   =================================================================== */
+const { el, clear, toast, confirmDialog } = require("src/dom.js");
+const { getState, subscribe, exportJSON, importJSON, resetAll } = require("src/store.js");
+const { MONTHS, esc } = require("src/utils.js");
+const { selectedModulesDetailed, totalEctsProgress } = require("src/modules.js");
+const { openEntryModal } = require("src/entryModal.js");
+const calendarView = require("src/views/calendar.js");
+const modulesView = require("src/views/modules.js");
+const reviewView = require("src/views/review.js");
+const settingsView = require("src/views/settings.js");
+
+const ROUTES = {
+  kalender: { label: "Kalender", icon: "📅", render: calendarView.render },
+  module: { label: "Module & Projekte", icon: "📖", render: modulesView.render },
+  rueckblick: { label: "Rückblick", icon: "📊", render: reviewView.render },
+  alltag: { label: "Alltag & Lernfenster", icon: "⚙️", render: settingsView.render },
+};
+
+let current = "kalender";
+let sidebarOpen = false;
+
+function navigate(route) {
+  current = route;
+  sidebarOpen = false;
+  renderAll();
+}
+window.__navigate = (r) => navigate(r === "rueckblick" ? "rueckblick" : r);
+
+/* ---------- Sidebar ---------- */
+function renderSidebar() {
+  const d = getState();
+  const mods = selectedModulesDetailed();
+  const prog = totalEctsProgress();
+
+  const nav = el(".nav", {}, Object.entries(ROUTES).map(([key, r]) =>
+    el(`button.nav-item${current === key ? ".active" : ""}`, { onclick: () => navigate(key) }, [
+      el("span.ico", { text: r.icon }), el("span", { text: r.label }),
+    ])));
+
+  // Meine Module Liste
+  const moduleList = el("div");
+  moduleList.appendChild(el(".nav-section-label", {}, [
+    el("span", { text: "MEINE MODULE" }),
+    el("button", { html: "+", title: "Modul hinzufügen", onclick: () => navigate("module") }),
+  ]));
+
+  const totalMinByMod = {};
+  d.entries.filter((e) => e.kind === "lernblock").forEach((e) => {
+    const k = e.moduleId || "__none";
+    totalMinByMod[k] = (totalMinByMod[k] || 0) + (e.doneH || 0) * 60 + (e.doneM || 0);
+  });
+
+  moduleList.appendChild(el("button.module-pill", { onclick: () => navigate("module") }, [
+    el(".dot", { style: { background: "#7c6ff0" } }),
+    el("span.name", { text: "Alle Einträge" }),
+    el("span.count", { text: String(d.entries.length) }),
+  ]));
+
+  if (mods.length) {
+    mods.slice(0, 12).forEach((m) => {
+      moduleList.appendChild(el("button.module-pill", { onclick: () => navigate("module"), title: m.name }, [
+        el(".dot", { style: { background: m.user.color || "#7c6ff0" } }),
+        el("span.name", { text: m.name }),
+        el("span.count", { text: String(d.entries.filter((e) => e.moduleId === m.id).length) }),
+      ]));
+    });
+    if (mods.length > 12) moduleList.appendChild(el(".sidebar-hint", { text: `+${mods.length - 12} weitere in „Module & Projekte“` }));
+  } else {
+    moduleList.appendChild(el(".sidebar-hint", { text: "Lege Module an, wenn du deine Lernblöcke zuordnen möchtest." }));
+  }
+
+  // Fortschritts-Mini
+  const progressMini = el("div", { style: { padding: "12px 11px 4px" } }, [
+    el("div", { style: { fontSize: "11px", fontWeight: "700", letterSpacing: ".6px", color: "#9aa0ac", marginBottom: "6px" }, text: "STUDIENFORTSCHRITT" }),
+    el(".progress", {}, [el("span", { style: { width: (prog.earned / prog.total * 100) + "%" } })]),
+    el("div", { style: { fontSize: "12px", color: "#6b7280", marginTop: "6px" }, text: `${prog.earned} / ${prog.total} ECTS bestanden · ${prog.planned} ECTS geplant` }),
+  ]);
+
+  return el(`.sidebar${sidebarOpen ? ".open" : ""}`, {}, [
+    el(".brand", {}, [
+      el(".brand-logo", { text: "✦" }),
+      el(".brand-text", {}, [
+        el("strong", { html: `Study<span class="accent">Flow</span>` }),
+        el("span", { text: "Online Marketing & E-Commerce" }),
+      ]),
+    ]),
+    el("button.btn-new", { onclick: () => openEntryModal() }, [el("span", { text: "+" }), el("span", { text: "Neuer Eintrag" })]),
+    nav,
+    moduleList,
+    progressMini,
+    el(".sidebar-footer", {}, [
+      el(".save-status", {}, [el("span", { text: "✓" }), el("span", { text: "Lokal gespeichert" })]),
+      el("button.footer-link", { html: "⬇ Daten exportieren", onclick: () => { exportJSON(); toast("Daten als JSON exportiert."); } }),
+      el("button.footer-link", { html: "⬆ Daten importieren", onclick: triggerImport }),
+      el("button.footer-link", { html: "↺ Zurücksetzen", onclick: () => confirmDialog("Alle lokalen Daten löschen und neu starten? Exportiere vorher, falls du sichern möchtest.", () => { resetAll(); toast("Zurückgesetzt."); }, { danger: true, yesLabel: "Alles löschen" }) }),
+    ]),
+  ]);
+}
+
+function triggerImport() {
+  const inp = el("input", { type: "file", accept: "application/json,.json", style: { display: "none" } });
+  inp.addEventListener("change", () => {
+    const f = inp.files[0];
+    if (!f) return;
+    importJSON(f).then(() => toast("Daten importiert.")).catch((e) => toast("Import fehlgeschlagen: " + e.message));
+  });
+  document.body.appendChild(inp);
+  inp.click();
+  setTimeout(() => inp.remove(), 1000);
+}
+
+/* ---------- Render ---------- */
+let root = null;
+
+function renderAll() {
+  clear(root);
+
+  // Mobile Topbar
+  const topbar = el(".mobile-topbar", {}, [
+    el("button.menu-btn", { html: "☰", onclick: () => { sidebarOpen = !sidebarOpen; renderAll(); } }),
+    el("strong", { html: `Study<span style="color:#7c6ff0">Flow</span>` }),
+    el("button.btn.btn-sm.btn-primary", { text: "+ Eintrag", style: { marginLeft: "auto" }, onclick: () => openEntryModal() }),
+  ]);
+
+  const scrim = el(`.scrim${sidebarOpen ? ".show" : ""}`, { onclick: () => { sidebarOpen = false; renderAll(); } });
+
+  const main = el(".main");
+  ROUTES[current].render(main);
+
+  const layout = el(".layout", {}, [renderSidebar(), el("div", { style: { overflow: "hidden", display: "flex", flexDirection: "column" } }, [topbar, main])]);
+
+  root.appendChild(layout);
+  root.appendChild(scrim);
+}
+
+function mount(container) {
+  root = container;
+  renderAll();
+  // Bei State-Änderung Sidebar + aktuelle View neu zeichnen
+  subscribe(() => renderAll());
+}
+
+
+exports.mount = mount;
+};
+__modules["src/main.js"] = function(require, module, exports){
+const { mount } = require("src/app.js");
+
+const app = document.getElementById("app");
+mount(app);
+
+
+
+};
+require("src/main.js");
+})();
+</script>
+</body>
+</html>

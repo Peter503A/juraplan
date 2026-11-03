@@ -1,0 +1,12 @@
+{
+  "name": "studyflow",
+  "version": "1.0.0",
+  "description": "Lernplaner für das Fernstudium Online Marketing & E-Commerce (B.A.) – Kalender, Module, Rückblick",
+  "type": "module",
+  "scripts": {
+    "build": "node build-standalone.mjs",
+    "serve": "node serve.mjs",
+    "test": "node test-harness.mjs && node test-interact.mjs"
+  },
+  "license": "MIT"
+}
