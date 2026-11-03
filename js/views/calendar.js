@@ -204,8 +204,9 @@
     const color = Store.entryColor(e);
     const isAppt = e.type === "appointment";
 
+    const learned = Store.actualMin(e);
     const block = el("div", {
-      class: "event" + (e.status === "done" ? " done" : "") +
+      class: "event" + (learned > 0 ? " logged" : "") +
         (isAppt ? " is-appointment" : " is-block"),
       style: {
         top: top + "px",
@@ -231,17 +232,12 @@
       block.appendChild(el("div", { class: "ev-time" },
         [`${e.start}–${e.end}`]));
     }
-    if (height > 52 && e.status && e.status !== "open") {
-      block.appendChild(el("div", { class: "ev-badges" }, [statusBadge(e.status)]));
+    // Für Lernblöcke mit eingetragener Zeit: gelernte Zeit als Badge
+    if (height > 52 && !isAppt && learned > 0) {
+      block.appendChild(el("div", { class: "ev-badges" },
+        [el("span", { class: "mini-badge ok" }, [U.fmtDuration(learned) + " gelernt"])]));
     }
     return block;
-  }
-
-  function statusBadge(status) {
-    if (status === "done") return el("span", { class: "mini-badge ok" }, ["Erledigt"]);
-    if (status === "partial") return el("span", { class: "mini-badge partial" }, ["Teilweise"]);
-    if (status === "missing") return el("span", { class: "mini-badge missing" }, ["Fehlt"]);
-    return null;
   }
 
   // ---------- Monat ----------
@@ -278,8 +274,7 @@
           const color = Store.entryColor(e);
           const isAppt = e.type === "appointment";
           const ev = el("div", {
-            class: "mc-event" + (e.status === "done" ? " done" : "") +
-              (isAppt ? " is-appointment" : " is-block"),
+            class: "mc-event" + (isAppt ? " is-appointment" : " is-block"),
             style: {
               borderLeftColor: color,
               background: isAppt ? "transparent" : hexToSoft(color),
@@ -345,25 +340,21 @@
     const weekEntries = Store.entriesInRange(U.toISODate(st), U.toISODate(en));
     const blocks = weekEntries.filter((e) => e.type === "block");
     const actualMin = blocks.reduce((sum, e) => sum + Store.actualMin(e), 0);
-    const plannedMin = blocks.reduce((sum, e) => sum + Store.plannedMin(e), 0);
-    const doneCount = blocks.filter((e) => e.status === "done").length;
+    const loggedCount = blocks.filter((e) => Store.actualMin(e) > 0).length;
 
     // Deine Woche
     const card1 = el("div", { class: "rail-card" });
     card1.appendChild(el("div", { class: "rc-eyebrow" }, ["DEINE WOCHE"]));
     card1.appendChild(el("div", { class: "rc-range" }, [U.fmtRangeNoYear(st, en)]));
     card1.appendChild(el("div", { class: "rail-big" }, [U.fmtHours(actualMin)]));
-    card1.appendChild(el("div", { class: "rail-big-label" }, ["tatsächlich gelernt"]));
+    card1.appendChild(el("div", { class: "rail-big-label" }, ["gelernt diese Woche"]));
 
     card1.appendChild(
       el("div", { class: "rail-stats" }, [
-        statRow("Geplante Lernzeit", U.fmtHours(plannedMin)),
-        statRow("Lernblöcke erledigt", `${doneCount} / ${blocks.length}`),
+        statRow("Lernblöcke mit Zeit", `${loggedCount}`),
+        statRow("Einträge gesamt", `${weekEntries.length}`),
       ])
     );
-    const pct = blocks.length ? (doneCount / blocks.length) * 100 : 0;
-    card1.appendChild(el("div", { class: "rail-progress" },
-      [el("div", { style: { width: pct + "%" } })]));
     card1.appendChild(
       el("button", { class: "rail-link", onclick: () => {
         Store.setReviewCursor(s.cursor);

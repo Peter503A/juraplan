@@ -21,7 +21,6 @@
           note: "",
           color: null, // individuelle Farbe; null = Modulfarbe erben
           priority: "normal", // normal | important | urgent
-          status: "open", // open | done | partial | missing
           actualHours: 0,
           actualMinutes: 0,
           missingNote: "",
@@ -77,6 +76,8 @@
           // Platzhalter des Titelfelds anpassen
           titleInput.setAttribute("placeholder",
             o.v === "appointment" ? "z. B. Vorlesung Zivilrecht" : "z. B. Schuldrecht AT – Fall 3");
+          // Lernzeit-Feld nur für Lernblöcke zeigen
+          renderLearned();
         },
       }, [
         el("span", { class: "tc-icon" }, [o.icon(20)]),
@@ -173,64 +174,48 @@
       }, [e.note || ""]), "Pro Eintrag kannst du hier frei notieren.")
     );
 
-    // Status
-    const statusWrap = el("div", { class: "conditional show" });
-    body.appendChild(
-      field("Status", segmented(
-        [
-          { v: "open", label: "Offen", icon: Icons.circleDashed },
-          { v: "done", label: "Erledigt", icon: Icons.check, status: "done" },
-          { v: "partial", label: "Teilweise", icon: Icons.flag, status: "partial" },
-          { v: "missing", label: "Fehlt", icon: Icons.x, status: "missing" },
-        ],
-        e.status,
-        (v) => { e.status = v; refreshConditional(); },
-        "status-seg"
-      ))
-    );
+    // Gelernte Zeit – nur bei Lernblöcken sinnvoll (Termine zählen nicht zur Lernzeit)
+    const learnedWrap = el("div", { style: { display: "flex", flexDirection: "column", gap: "16px" } });
+    body.appendChild(learnedWrap);
 
-    // Bedingte Felder: Ist-Zeit + Was fehlt + Carry-over
-    const cond = el("div", { style: { display: "flex", flexDirection: "column", gap: "16px" } });
-    body.appendChild(cond);
-
-    function refreshConditional() {
-      U.clear(cond);
-      if (e.status === "done" || e.status === "partial") {
-        const hrs = el("input", { type: "number", min: "0", max: "24", value: e.actualHours,
-          oninput: (ev) => (e.actualHours = parseInt(ev.target.value, 10) || 0) });
-        const mins = el("input", { type: "number", min: "0", max: "59", step: "5", value: e.actualMinutes,
-          oninput: (ev) => (e.actualMinutes = parseInt(ev.target.value, 10) || 0) });
-        cond.appendChild(
-          field("Tatsächlich gelernt",
-            el("div", { class: "field-row" }, [
-              el("div", { style: { display: "flex", alignItems: "center", gap: "6px" } },
-                [hrs, el("span", { class: "muted tiny" }, ["Std."])]),
-              el("div", { style: { display: "flex", alignItems: "center", gap: "6px" } },
-                [mins, el("span", { class: "muted tiny" }, ["Min."])]),
-            ]),
-            "Trägt die Lernzeit in den Wochenrückblick ein.")
-        );
-      }
-      if (e.status === "partial" || e.status === "missing") {
-        cond.appendChild(
-          field(e.status === "missing" ? "Was fehlt komplett?" : "Was fehlt noch?",
-            el("textarea", {
-              placeholder: "z. B. Klausurteil B offen, nochmal wiederholen …",
-              oninput: (ev) => (e.missingNote = ev.target.value),
-            }, [e.missingNote || ""]))
-        );
-        const carry = el("label", {
-          style: { display: "flex", alignItems: "center", gap: "8px", fontSize: "13.5px",
-            fontWeight: "500", cursor: "pointer" },
-        }, [
-          el("input", { type: "checkbox", checked: e.carryOver ? "checked" : null,
-            onchange: (ev) => (e.carryOver = ev.target.checked) }),
-          "In nächste Woche mitnehmen",
-        ]);
-        cond.appendChild(el("div", { class: "field" }, [carry]));
-      }
+    function renderLearned() {
+      U.clear(learnedWrap);
+      if (e.type !== "block") return; // Termine haben keine Lernzeit
+      const hrs = el("input", { type: "number", min: "0", max: "24", value: e.actualHours,
+        oninput: (ev) => (e.actualHours = parseInt(ev.target.value, 10) || 0) });
+      const mins = el("input", { type: "number", min: "0", max: "59", step: "5", value: e.actualMinutes,
+        oninput: (ev) => (e.actualMinutes = parseInt(ev.target.value, 10) || 0) });
+      learnedWrap.appendChild(
+        field("Gelernt",
+          el("div", { class: "field-row" }, [
+            el("div", { style: { display: "flex", alignItems: "center", gap: "6px" } },
+              [hrs, el("span", { class: "muted tiny" }, ["Std."])]),
+            el("div", { style: { display: "flex", alignItems: "center", gap: "6px" } },
+              [mins, el("span", { class: "muted tiny" }, ["Min."])]),
+          ]),
+          "Deine tatsächlich gelernte Zeit – erscheint im Wochenrückblick.")
+      );
     }
-    refreshConditional();
+    renderLearned();
+
+    // Offene Punkte (optional): Was fehlt noch + in nächste Woche mitnehmen
+    body.appendChild(
+      field("Offene Punkte",
+        el("textarea", {
+          placeholder: "Optional: Was fehlt noch oder willst du wiederholen? …",
+          oninput: (ev) => (e.missingNote = ev.target.value),
+        }, [e.missingNote || ""]),
+        "optional")
+    );
+    const carry = el("label", {
+      style: { display: "flex", alignItems: "center", gap: "8px", fontSize: "13.5px",
+        fontWeight: "500", cursor: "pointer" },
+    }, [
+      el("input", { type: "checkbox", checked: e.carryOver ? "checked" : null,
+        onchange: (ev) => (e.carryOver = ev.target.checked) }),
+      "In nächste Woche mitnehmen",
+    ]);
+    body.appendChild(el("div", { class: "field" }, [carry]));
 
     modal.appendChild(body);
 
@@ -275,11 +260,11 @@
       return;
     }
     e.title = e.title.trim();
+    // Termine zählen nicht zur Lernzeit
+    if (e.type !== "block") { e.actualHours = 0; e.actualMinutes = 0; }
     e.actualMin = (e.actualHours || 0) * 60 + (e.actualMinutes || 0);
-    if (e.status !== "partial" && e.status !== "missing") {
-      e.missingNote = "";
-      e.carryOver = false;
-    }
+    // Status gibt es nicht mehr – alte Daten migrieren
+    delete e.status;
     await Store.saveEntry(e);
     U.toast(isNew ? "Eintrag angelegt" : "Gespeichert");
     close();

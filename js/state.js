@@ -19,7 +19,7 @@
     reviewCursor: new Date(),
     activeModule: null, // Modul-ID für Filter, null = alle
     prioFilter: "all", // all | important | urgent
-    entries: [], // {id, title, type, moduleId, date, start, end, note, priority, status, actualMin, missingNote, carryOver, createdAt}
+    entries: [], // {id, title, type, moduleId, date, start, end, note, color, priority, actualMin, missingNote, carryOver, createdAt}
     modules: [], // {id, name, color, goalMin, createdAt}
     notes: {}, // id -> {id, text}
   };
@@ -124,18 +124,10 @@
     return "#7465cf";
   }
 
-  // Dauer (geplant) in Minuten
-  function plannedMin(e) {
-    const s = U.timeToMin(e.start);
-    const en = U.timeToMin(e.end);
-    return Math.max(0, en - s);
-  }
-  // Tatsächlich gelernte Minuten (nur wenn erledigt/teilweise & Zeit eingetragen)
+  // Tatsächlich gelernte Minuten (nur Lernblöcke zählen zur Lernzeit)
   function actualMin(e) {
-    if (e.status === "done" || e.status === "partial") {
-      return e.actualMin || 0;
-    }
-    return 0;
+    if (e.type !== "block") return 0;
+    return e.actualMin || 0;
   }
 
   // ---------- Navigation ----------
@@ -187,7 +179,7 @@
     state, subscribe,
     init, saveEntry, deleteEntry, saveModule, deleteModule, moduleById,
     saveNote, getNote,
-    entriesForDate, entriesInRange, filtered, entryColor, plannedMin, actualMin,
+    entriesForDate, entriesInRange, filtered, entryColor, actualMin,
     setView, setCalView, setCursor, setReviewCursor, setActiveModule, setPrioFilter,
     exportData, importData,
     DEFAULT_COLORS,

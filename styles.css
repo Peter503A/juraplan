@@ -432,8 +432,7 @@ svg { display: block; }
 .event .ev-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display:flex; align-items:center; gap:4px; }
 .event .ev-time { font-size: 10.5px; color: var(--text-muted); margin-top: 1px; }
 .event .ev-badges { display: flex; gap: 3px; margin-top: 3px; flex-wrap: wrap; }
-.event.done { opacity: 0.7; }
-.event.done .ev-title { text-decoration: line-through; text-decoration-color: var(--text-faint); }
+.event.logged { box-shadow: var(--shadow-sm); }
 .event .prio-flag { flex-shrink: 0; }
 .event .ev-type-icon { flex-shrink: 0; opacity: 0.7; }
 
@@ -769,9 +768,7 @@ svg { display: block; }
 .prio-seg button.active[data-prio="important"] { background: var(--prio-important-soft); border-color: var(--prio-important); color: var(--prio-important); }
 .prio-seg button.active[data-prio="urgent"] { background: var(--prio-urgent-soft); border-color: var(--prio-urgent); color: var(--prio-urgent); }
 
-.status-seg button.active[data-status="done"] { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
-.status-seg button.active[data-status="partial"] { background: var(--partial-soft); border-color: var(--partial); color: var(--partial); }
-.status-seg button.active[data-status="missing"] { background: var(--missing-soft); border-color: var(--missing); color: var(--missing); }
+
 
 .color-pick { display: flex; gap: 8px; flex-wrap: wrap; }
 .color-pick button {

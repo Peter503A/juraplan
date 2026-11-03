@@ -30,15 +30,16 @@
     const entries = Store.entriesInRange(U.toISODate(st), U.toISODate(en));
     const blocks = entries.filter((e) => e.type === "block");
     const actualMin = blocks.reduce((sum, e) => sum + Store.actualMin(e), 0);
-    const plannedMin = blocks.reduce((sum, e) => sum + Store.plannedMin(e), 0);
-    const done = blocks.filter((e) => e.status === "done").length;
+    const loggedCount = blocks.filter((e) => Store.actualMin(e) > 0).length;
+    // Ø pro erfasstem Lernblock
+    const avgMin = loggedCount ? Math.round(actualMin / loggedCount) : 0;
 
-    // Kennzahlen
+    // Kennzahlen – nur die tatsächlich gelernte Zeit, kein Soll/Ist-Vergleich mehr
     scroll.appendChild(
       el("div", { class: "stat-row" }, [
-        statCard("Tatsächlich gelernt", U.fmtHours(actualMin)),
-        statCard("Lernzeit geplant", U.fmtHours(plannedMin)),
-        statCard("Lernblöcke erledigt", `${done}`, `/ ${blocks.length}`),
+        statCard("Gelernt diese Woche", U.fmtHours(actualMin)),
+        statCard("Lernblöcke mit Zeit", `${loggedCount}`),
+        statCard("Ø pro Lernblock", U.fmtDuration(avgMin)),
       ])
     );
 
@@ -86,17 +87,17 @@
     const groups = {};
     blocks.forEach((e) => {
       const key = e.moduleId || "none";
-      if (!groups[key]) groups[key] = { actual: 0, planned: 0 };
+      if (!groups[key]) groups[key] = { actual: 0 };
       groups[key].actual += Store.actualMin(e);
-      groups[key].planned += Store.plannedMin(e);
     });
 
     const maxActual = Math.max(1, ...Object.values(groups).map((g) => g.actual));
 
-    const keys = Object.keys(groups);
+    // nur Module anzeigen, in denen tatsächlich gelernt wurde
+    const keys = Object.keys(groups).filter((k) => groups[k].actual > 0);
     if (keys.length === 0) {
       panel.appendChild(el("p", { class: "muted", style: { fontSize: "13.5px" } },
-        ["Noch keine Lernblöcke in dieser Woche."]));
+        ["Noch keine gelernte Zeit in dieser Woche eingetragen."]));
     } else {
       keys.forEach((key) => {
         const mod = key === "none" ? null : Store.moduleById(key);
@@ -112,7 +113,6 @@
             ]),
             el("div", { class: "mtr-bar" },
               [el("div", { style: { width: (g.actual / maxActual) * 100 + "%", background: color } })]),
-            el("div", { class: "mtr-sub" }, [`${U.fmtHours(g.planned)} geplant`]),
           ])
         );
       });
@@ -120,7 +120,7 @@
 
     panel.appendChild(
       el("p", { class: "panel-hint" },
-        ["Die Lernzeit zählt am eingetragenen Lerndatum. Abhaken trägt keine Zeit automatisch ein – du trägst sie beim Status selbst ein."])
+        ["Zeigt deine tatsächlich gelernte Zeit je Modul, am eingetragenen Lerndatum."])
     );
     return panel;
   }
@@ -130,12 +130,12 @@
     panel.appendChild(el("h3", {}, ["Offen & mitnehmen"]));
     panel.appendChild(
       el("p", { class: "muted", style: { fontSize: "12.5px", margin: "-6px 0 14px" } },
-        ["Offene Lernblöcke bis Ende dieser Woche. Verschieben übernimmt keine neue Lernzeit."])
+        ["Notierte offene Punkte und alles, was du in die nächste Woche mitnehmen willst."])
     );
 
-    const open = entries.filter(
-      (e) => e.status === "open" || e.status === "partial" || e.status === "missing" || e.carryOver
-    );
+    // Jetzt nicht mehr status-, sondern inhaltsgetrieben:
+    // Einträge mit notiertem offenen Punkt oder „mitnehmen“-Haken.
+    const open = entries.filter((e) => e.carryOver || (e.missingNote && e.missingNote.trim()));
 
     if (open.length === 0) {
       panel.appendChild(el("p", { class: "muted", style: { fontSize: "13.5px" } },
@@ -149,15 +149,12 @@
         const item = el("div", { class: "open-item", onclick: () => EntryDialog.open(e),
           style: { cursor: "pointer" } });
         item.appendChild(el("div", { class: "oi-check" }, [
-          e.status === "missing" ? Icons.x(16) :
-          e.status === "partial" ? Icons.flag(16) : Icons.circleDashed(16),
+          e.carryOver ? Icons.arrowRightCircle(16) : Icons.flag(16),
         ]));
         const b = el("div", { class: "oi-body" });
         b.appendChild(el("div", { class: "oi-title" }, [e.title]));
-        if (e.missingNote) {
+        if (e.missingNote && e.missingNote.trim()) {
           b.appendChild(el("div", { class: "oi-missing" }, [e.missingNote]));
-        } else if (e.status === "open") {
-          b.appendChild(el("div", { class: "oi-missing" }, ["Noch nicht erledigt"]));
         }
         if (e.carryOver) {
           b.appendChild(el("div", { class: "oi-carry" },
@@ -253,8 +250,9 @@
       );
       dayEvs.forEach((e) => {
         const color = Store.entryColor(e);
+        const learned = Store.actualMin(e);
         const row = el("div", {
-          class: "wet-row" + (e.status === "done" ? " done" : ""),
+          class: "wet-row",
           onclick: () => EntryDialog.open(e),
         });
         row.appendChild(el("span", { class: "wet-dot", style: { background: color } }));
@@ -268,8 +266,9 @@
         titleCell.style.alignItems = "center";
         titleCell.style.gap = "6px";
         row.appendChild(titleCell);
-        if (e.status && e.status !== "open") {
-          row.appendChild(statusBadge(e.status));
+        // Gelernte Zeit als Badge (nur Lernblöcke mit eingetragener Zeit)
+        if (learned > 0) {
+          row.appendChild(el("span", { class: "mini-badge ok" }, [U.fmtDuration(learned)]));
         }
         dayBlock.appendChild(row);
       });
@@ -277,13 +276,6 @@
     }
     panel.appendChild(table);
     return panel;
-  }
-
-  function statusBadge(status) {
-    if (status === "done") return el("span", { class: "mini-badge ok" }, ["Erledigt"]);
-    if (status === "partial") return el("span", { class: "mini-badge partial" }, ["Teilweise"]);
-    if (status === "missing") return el("span", { class: "mini-badge missing" }, ["Fehlt"]);
-    return null;
   }
 
   // ---- Modals für Ziel / Notiz / Carry ----
