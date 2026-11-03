@@ -433,7 +433,6 @@ svg { display: block; }
 .event .ev-time { font-size: 10.5px; color: var(--text-muted); margin-top: 1px; }
 .event .ev-badges { display: flex; gap: 3px; margin-top: 3px; flex-wrap: wrap; }
 .event.logged { box-shadow: var(--shadow-sm); }
-.event .prio-flag { flex-shrink: 0; }
 .event.is-block { border-left-style: solid; }
 
 .mini-badge {
@@ -753,9 +752,6 @@ svg { display: block; }
 }
 .seg button:hover { border-color: var(--accent); color: var(--text); }
 .seg button.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-
-.prio-seg button.active[data-prio="important"] { background: var(--prio-important-soft); border-color: var(--prio-important); color: var(--prio-important); }
-.prio-seg button.active[data-prio="urgent"] { background: var(--prio-urgent-soft); border-color: var(--prio-urgent); color: var(--prio-urgent); }
 
 
 

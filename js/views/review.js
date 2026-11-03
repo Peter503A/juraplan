@@ -256,15 +256,10 @@
         row.appendChild(el("span", { class: "wet-dot", style: { background: color } }));
         row.appendChild(el("span", { class: "wet-time" }, [`${e.start}–${e.end}`]));
         const titleCell = el("span", { class: "wet-title" }, [
-          e.priority === "urgent" ? Icons.alert(13) :
-            e.priority === "important" ? Icons.star(13) : null,
           el("span", {}, [e.title]),
-        ].filter(Boolean));
-        titleCell.style.display = "flex";
-        titleCell.style.alignItems = "center";
-        titleCell.style.gap = "6px";
+        ]);
         row.appendChild(titleCell);
-        // Gelernte Zeit als Badge (nur Lernblöcke mit eingetragener Zeit)
+        // Gelernte Zeit als Badge
         if (learned > 0) {
           row.appendChild(el("span", { class: "mini-badge ok" }, [U.fmtDuration(learned)]));
         }

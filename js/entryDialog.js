@@ -19,7 +19,6 @@
           end: (defaults && defaults.end) || "10:00",
           note: "",
           color: null, // individuelle Farbe; null = Modulfarbe erben
-          priority: "normal", // normal | important | urgent
           missingNote: "",
           carryOver: false,
         };
@@ -113,20 +112,6 @@
     );
     updateDuration();
 
-    // Priorität
-    body.appendChild(
-      field("Priorität", segmented(
-        [
-          { v: "normal", label: "Normal" },
-          { v: "important", label: "Wichtig", icon: Icons.star, prio: "important" },
-          { v: "urgent", label: "Dringend", icon: Icons.alert, prio: "urgent" },
-        ],
-        e.priority,
-        (v) => (e.priority = v),
-        "prio-seg"
-      ))
-    );
-
     // Notiz
     body.appendChild(
       field("Notiz", el("textarea", {
@@ -197,9 +182,10 @@
       return;
     }
     e.title = e.title.trim();
-    // Alte Felder migrieren (gibt es nicht mehr): gelernte Zeit = Dauer Von–Bis, kein Typ/Status
+    // Alte Felder migrieren (gibt es nicht mehr): gelernte Zeit = Dauer Von–Bis, kein Typ/Status/Priorität
     delete e.status;
     delete e.type;
+    delete e.priority;
     delete e.actualMin;
     delete e.actualHours;
     delete e.actualMinutes;
@@ -240,24 +226,6 @@
     const probe = document.createElement("span");
     probe.style.background = hex;
     return probe.style.background === styleBg || styleBg.toLowerCase() === hex.toLowerCase();
-  }
-
-  function segmented(options, current, onPick, extraClass) {
-    const seg = el("div", { class: "seg " + (extraClass || "") });
-    options.forEach((o) => {
-      const btn = el("button", {
-        class: o.v === current ? "active" : "",
-        "data-prio": o.prio || null,
-        "data-status": o.status || null,
-        onclick: () => {
-          seg.querySelectorAll("button").forEach((b) => b.classList.remove("active"));
-          btn.classList.add("active");
-          onPick(o.v);
-        },
-      }, [o.icon ? o.icon(15) : null, o.label].filter(Boolean));
-      seg.appendChild(btn);
-    });
-    return seg;
   }
 
   window.EntryDialog = { open, close };

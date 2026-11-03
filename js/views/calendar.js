@@ -217,8 +217,6 @@
     });
 
     const title = el("div", { class: "ev-title" });
-    if (e.priority === "urgent") title.appendChild(Icons.alert(12, "prio-flag"));
-    else if (e.priority === "important") title.appendChild(Icons.star(12, "prio-flag"));
     title.appendChild(el("span", {}, [e.title]));
     block.appendChild(title);
 
@@ -274,10 +272,8 @@
             },
             onclick: (evt) => { evt.stopPropagation(); EntryDialog.open(e); },
           }, [
-            e.priority === "urgent" ? Icons.alert(10) :
-              e.priority === "important" ? Icons.star(10) : null,
             el("span", {}, [e.title]),
-          ].filter(Boolean));
+          ]);
           cell.appendChild(ev);
         });
         if (evs.length > 3) {

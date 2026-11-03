@@ -18,8 +18,7 @@
     cursor: new Date(), // Referenzdatum der aktuellen Ansicht
     reviewCursor: new Date(),
     activeModule: null, // Modul-ID für Filter, null = alle
-    prioFilter: "all", // all | important | urgent
-    entries: [], // {id, title, moduleId, date, start, end, note, color, priority, missingNote, carryOver, createdAt}
+    entries: [], // {id, title, moduleId, date, start, end, note, color, missingNote, carryOver, createdAt}
     modules: [], // {id, name, color, goalMin, createdAt}
     notes: {}, // id -> {id, text}
   };
@@ -112,7 +111,6 @@
   function filtered() {
     let list = state.entries;
     if (state.activeModule) list = list.filter((e) => e.moduleId === state.activeModule);
-    if (state.prioFilter !== "all") list = list.filter((e) => e.priority === state.prioFilter);
     return list;
   }
 
@@ -137,7 +135,6 @@
   function setCursor(d) { state.cursor = new Date(d); emit(); }
   function setReviewCursor(d) { state.reviewCursor = new Date(d); emit(); }
   function setActiveModule(id) { state.activeModule = id; emit(); }
-  function setPrioFilter(p) { state.prioFilter = p; emit(); }
 
   // ---------- Export / Import ----------
   async function exportData() {
@@ -181,7 +178,7 @@
     init, saveEntry, deleteEntry, saveModule, deleteModule, moduleById,
     saveNote, getNote,
     entriesForDate, entriesInRange, filtered, entryColor, actualMin,
-    setView, setCalView, setCursor, setReviewCursor, setActiveModule, setPrioFilter,
+    setView, setCalView, setCursor, setReviewCursor, setActiveModule,
     exportData, importData,
     DEFAULT_COLORS,
   };
