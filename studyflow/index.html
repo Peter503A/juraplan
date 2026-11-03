@@ -2,14 +2,42 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <meta name="theme-color" content="#7c6ff0" />
+  <meta name="description" content="StudyFlow – Lernplaner für das Fernstudium Online Marketing & E-Commerce. Läuft offline, speichert lokal." />
   <title>StudyFlow – Lernplaner Online Marketing & E-Commerce</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="StudyFlow" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
   <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%237c6ff0'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>%E2%9C%A6</text></svg>" />
 </head>
 <body>
   <div id="app"></div>
   <script type="module" src="src/main.js"></script>
+  <script>
+    // Service Worker registrieren (für Offline-Nutzung und Installation)
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      });
+    }
+    // Installations-Angebot merken (von der Sidebar genutzt)
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      window.__deferredInstallPrompt = e;
+      window.dispatchEvent(new CustomEvent("sf-installable"));
+    });
+    window.addEventListener("appinstalled", () => {
+      window.__deferredInstallPrompt = null;
+      window.dispatchEvent(new CustomEvent("sf-installed"));
+    });
+  </script>
 </body>
 </html>

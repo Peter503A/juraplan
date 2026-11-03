@@ -1,7 +1,7 @@
 /* ===================================================================
    App-Shell: Sidebar, Navigation, Routing, Export/Import
    =================================================================== */
-import { el, clear, toast, confirmDialog } from "./dom.js";
+import { el, clear, toast, confirmDialog, openModal, closeModal } from "./dom.js";
 import { getState, subscribe, exportJSON, importJSON, resetAll } from "./store.js";
 import { MONTHS, esc } from "./utils.js";
 import { selectedModulesDetailed, totalEctsProgress } from "./modules.js";
@@ -92,11 +92,66 @@ function renderSidebar() {
     progressMini,
     el(".sidebar-footer", {}, [
       el(".save-status", {}, [el("span", { text: "✓" }), el("span", { text: "Lokal gespeichert" })]),
+      installButton(),
       el("button.footer-link", { html: "⬇ Daten exportieren", onclick: () => { exportJSON(); toast("Daten als JSON exportiert."); } }),
       el("button.footer-link", { html: "⬆ Daten importieren", onclick: triggerImport }),
       el("button.footer-link", { html: "↺ Zurücksetzen", onclick: () => confirmDialog("Alle lokalen Daten löschen und neu starten? Exportiere vorher, falls du sichern möchtest.", () => { resetAll(); toast("Zurückgesetzt."); }, { danger: true, yesLabel: "Alles löschen" }) }),
     ]),
   ]);
+}
+
+function isStandalone() {
+  if (typeof window === "undefined") return false;
+  try {
+    if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return true;
+    if (window.navigator && window.navigator.standalone === true) return true;
+  } catch (_) {}
+  return false;
+}
+
+function installButton() {
+  // Bereits als App installiert / gestartet -> Hinweis statt Button
+  if (isStandalone()) {
+    return el(".save-status", { style: { color: "#7c6ff0" } }, [el("span", { text: "✦" }), el("span", { text: "Als App gestartet" })]);
+  }
+  const canInstall = typeof window !== "undefined" && !!window.__deferredInstallPrompt;
+  return el("button.footer-link", {
+    html: "⬇ Als App installieren",
+    style: canInstall ? { color: "#7c6ff0", fontWeight: "600" } : {},
+    onclick: async () => {
+      const dp = window.__deferredInstallPrompt;
+      if (dp) {
+        dp.prompt();
+        try { await dp.userChoice; } catch (_) {}
+        window.__deferredInstallPrompt = null;
+        renderAll();
+      } else {
+        showInstallHelp();
+      }
+    },
+  });
+}
+
+function showInstallHelp() {
+  openInstallModal();
+}
+
+function openInstallModal() {
+  const row = (title, steps) => el("div", { style: { marginBottom: "14px" } }, [
+    el("div", { style: { fontWeight: "700", marginBottom: "4px" }, text: title }),
+    el("div", { style: { fontSize: "13.5px", color: "#6b7280", lineHeight: "1.55" }, html: steps }),
+  ]);
+  openModal(el("div", {}, [
+    el(".modal-head", {}, [el("h2", { text: "StudyFlow als App installieren" }), el("button.close", { html: "&times;", onclick: closeModal })]),
+    el(".modal-body", {}, [
+      row("💻 Chrome / Edge (PC & Mac)", 'Klicke rechts in der Adressleiste auf das <b>Installieren-Symbol</b> (Monitor mit Pfeil) und wähle „Installieren". StudyFlow öffnet sich danach in einem eigenen Fenster.'),
+      row("🧭 Safari (Mac)", "Menü <b>Ablage → Zum Dock hinzufügen</b>."),
+      row("📱 iPhone / iPad (Safari)", "Tippe auf <b>Teilen</b> (Quadrat mit Pfeil) → <b>Zum Home-Bildschirm</b>."),
+      row("🤖 Android (Chrome)", 'Tippe auf das <b>Menü ⋮</b> → <b>App installieren</b> bzw. „Zum Startbildschirm hinzufügen".'),
+      el("div", { style: { fontSize: "12.5px", color: "#9aa0ac", marginTop: "6px" }, text: "Hinweis: Das Installieren klappt am besten, wenn du StudyFlow über einen lokalen Server (Start-Skript) oder eine Webadresse öffnest – nicht per Doppelklick als einzelne Datei." }),
+    ]),
+    el(".modal-foot", {}, [el("button.btn.btn-primary", { text: "Verstanden", onclick: closeModal })]),
+  ]));
 }
 
 function triggerImport() {
@@ -140,4 +195,9 @@ export function mount(container) {
   renderAll();
   // Bei State-Änderung Sidebar + aktuelle View neu zeichnen
   subscribe(() => renderAll());
+  // PWA: wenn ein Installations-Angebot verfügbar wird, Sidebar aktualisieren
+  if (typeof window !== "undefined" && typeof window.addEventListener === "function") {
+    window.addEventListener("sf-installable", () => renderAll());
+    window.addEventListener("sf-installed", () => { toast("StudyFlow wurde als App installiert. 🎉"); renderAll(); });
+  }
 }

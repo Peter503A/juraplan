@@ -121,20 +121,71 @@ const css = readFileSync(resolve(ROOT, "styles.css"), "utf8");
 
 const bootstrap = `require("src/main.js");`;
 
+// Icon + Manifest als Data-URLs einbetten, damit die EINZELNE Datei
+// ebenfalls ein App-Icon hat und (wo möglich) installierbar ist.
+const iconSvg = readFileSync(resolve(ROOT, "icons/icon.svg"), "utf8");
+const iconSvgUrl = "data:image/svg+xml;base64," + Buffer.from(iconSvg).toString("base64");
+const icon512 = "data:image/png;base64," + readFileSync(resolve(ROOT, "icons/icon-512.png")).toString("base64");
+const icon192 = "data:image/png;base64," + readFileSync(resolve(ROOT, "icons/icon-192.png")).toString("base64");
+const icon180 = "data:image/png;base64," + readFileSync(resolve(ROOT, "icons/icon-180.png")).toString("base64");
+const iconMaskable = "data:image/png;base64," + readFileSync(resolve(ROOT, "icons/icon-maskable-512.png")).toString("base64");
+
+const manifest = {
+  name: "StudyFlow – Online Marketing & E-Commerce",
+  short_name: "StudyFlow",
+  description: "Dein Lernplaner für das Fernstudium Online Marketing & E-Commerce. Alle Daten bleiben lokal auf dem Gerät.",
+  start_url: ".",
+  scope: ".",
+  display: "standalone",
+  orientation: "any",
+  background_color: "#f4f5f8",
+  theme_color: "#7c6ff0",
+  lang: "de",
+  categories: ["productivity", "education"],
+  icons: [
+    { src: icon192, sizes: "192x192", type: "image/png", purpose: "any" },
+    { src: icon512, sizes: "512x512", type: "image/png", purpose: "any" },
+    { src: iconMaskable, sizes: "512x512", type: "image/png", purpose: "maskable" },
+  ],
+};
+const manifestUrl = "data:application/manifest+json;base64," + Buffer.from(JSON.stringify(manifest)).toString("base64");
+
+const pwaScript = `
+if ("serviceWorker" in navigator && location.protocol !== "file:") {
+  // Inline Service Worker als Blob (nur über http(s) nutzbar)
+  try {
+    var swCode = 'self.addEventListener("install",e=>self.skipWaiting());self.addEventListener("activate",e=>self.clients.claim());self.addEventListener("fetch",function(){});';
+    var swUrl = URL.createObjectURL(new Blob([swCode], { type: "text/javascript" }));
+    navigator.serviceWorker.register(swUrl).catch(function(){});
+  } catch(e){}
+}
+window.addEventListener("beforeinstallprompt", function(e){ e.preventDefault(); window.__deferredInstallPrompt = e; window.dispatchEvent(new CustomEvent("sf-installable")); });
+window.addEventListener("appinstalled", function(){ window.__deferredInstallPrompt = null; window.dispatchEvent(new CustomEvent("sf-installed")); });
+`;
+
 const html = `<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
 <meta name="theme-color" content="#7c6ff0" />
+<meta name="description" content="StudyFlow – Lernplaner für Online Marketing & E-Commerce. Läuft offline, speichert lokal." />
 <title>StudyFlow – Lernplaner Online Marketing & E-Commerce</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%237c6ff0'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>%E2%9C%A6</text></svg>" />
+<link rel="manifest" href="${manifestUrl}" />
+<link rel="icon" href="${iconSvgUrl}" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="${icon180}" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="StudyFlow" />
+<meta name="mobile-web-app-capable" content="yes" />
 <style>
 ${css}
 </style>
 </head>
 <body>
 <div id="app"></div>
+<script>
+${pwaScript}
+</script>
 <script>
 "use strict";
 (function(){
